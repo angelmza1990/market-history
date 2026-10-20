@@ -259,3 +259,5 @@ table.heat tfoot th { position: sticky; left: 0; background: var(--surface); tex
 /* keep the row name visible while a wide table scrolls */
 .table-scroll table.data th:first-child, .table-scroll table.data td:first-child { position: sticky; left: 0; background: var(--surface); z-index: 1; }
 .table-scroll table.data tr.group-row td { background: var(--bg); }
+.control { min-width: 0; max-width: 100%; }
+.control select { min-width: 0; max-width: 100%; text-overflow: ellipsis; }
