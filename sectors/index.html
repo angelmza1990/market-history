@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en" data-root="..">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sectors · Market History</title>
+  <meta name="description" content="The eleven S&P 500 sectors: leadership by year, performance against the index, risk and correlations.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%231f3a5f'/%3E%3Cpath d='M12 44l12-12 9 7 19-21' fill='none' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../assets/theme.css">
+  <style>
+    .quilt-scroll { overflow-x: auto; }
+    table.quilt { border-collapse: separate; border-spacing: 2px; font-size: 11px; }
+    table.quilt th { font-weight: 600; color: var(--muted); padding: 0 0 4px; font-size: 11.5px; }
+    table.quilt td { width: 64px; min-width: 64px; height: 36px; padding: 2px 4px; text-align: center; border-radius: 3px; line-height: 1.2; transition: opacity 0.1s; cursor: default; }
+    table.quilt td b { display: block; font-weight: 600; font-size: 11px; }
+    table.quilt td.bench { box-shadow: inset 0 0 0 1.5px var(--ink); }
+    table.quilt.focus td:not(.on) { opacity: 0.18; }
+    table.quilt td.on { box-shadow: inset 0 0 0 1.5px var(--ink); }
+    table.quilt th.rank { position: sticky; left: 0; background: var(--surface); padding-right: 6px; text-align: right; z-index: 1; }
+    .multiples { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+    .multiples .card { padding: 12px 14px 6px; margin: 0; }
+    .multiples .card + .card { margin: 0; }
+    .multiples h3 { text-transform: none; letter-spacing: 0; font-size: 14px; color: var(--ink); margin: 0; }
+    .multiples .meta { font-size: 12px; color: var(--muted); margin: 2px 0 4px; }
+    table.heat.corr td { min-width: 46px; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="wrap">
+      <header class="page-head">
+        <p class="eyebrow">Market History</p>
+        <h1>US sectors</h1>
+        <p class="lede">The S&amp;P 500 split into its eleven GICS sectors, measured with the Select Sector SPDR ETFs (total return, dividends reinvested) against the SPDR S&amp;P 500 ETF. Most sector funds start in December 1998; Real Estate begins in 2015 and Communication Services in 2018.</p>
+        <p class="updated" id="updated"></p>
+      </header>
+
+      <section class="block">
+        <h2>Leadership by year</h2>
+        <p class="sub">Each column ranks the sectors from best to worst in that calendar year. The S&amp;P 500 is outlined. Hover a cell, or choose a sector, to follow it through time.</p>
+        <div class="controls"><label class="control">Follow <select id="follow"></select></label></div>
+        <div class="card"><div class="quilt-scroll" id="quilt-scroll"><table class="quilt" id="quilt"></table></div><div id="quilt-legend"></div></div>
+      </section>
+
+      <section class="block">
+        <h2>Performance</h2>
+        <p class="sub">Returns over 3, 5 and 10 years are annualized. Beta and correlation use monthly returns against the S&amp;P 500 over the last 10 years (or since inception if shorter). Click a column to sort.</p>
+        <div class="card table-scroll">
+          <table class="data" id="perf">
+            <thead><tr>
+              <th data-sort="short">Sector</th><th data-sort="ytd">YTD</th><th data-sort="r1y">1 yr</th><th data-sort="cagr3">3 yr</th>
+              <th data-sort="cagr5">5 yr</th><th data-sort="cagr10">10 yr</th><th data-sort="cagrAll">Since start</th>
+              <th data-sort="vol">Volatility</th><th data-sort="beta">Beta</th><th data-sort="corr">Correlation</th><th data-sort="dd">Max drawdown</th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="block">
+        <h2>Against the index, year by year</h2>
+        <p class="sub">Sector return minus the S&amp;P 500 return in each calendar year, in percentage points. Blue: the sector beat the index.</p>
+        <div class="card">
+          <div class="table-scroll" style="max-height:70vh;overflow:auto"><table class="heat" id="excess"></table></div>
+          <div id="excess-legend"></div>
+        </div>
+      </section>
+
+      <section class="block">
+        <h2>Growth of 100, sector by sector</h2>
+        <p class="sub">Each panel shows one sector (blue) against the S&amp;P 500 (gray), on the same log scale.</p>
+        <div class="controls"><span class="control">Since <span id="mult-start"></span></span></div>
+        <div class="multiples" id="multiples"></div>
+      </section>
+
+      <section class="block">
+        <h2>Correlations</h2>
+        <p class="sub">Correlation of monthly returns. Values near 1 mean two assets usually move together; values near 0 or below mean they diversify each other.</p>
+        <div class="controls"><span class="control">Window <span id="corr-window"></span></span></div>
+        <div class="card"><div class="table-scroll"><table class="heat corr" id="corr"></table></div><div id="corr-legend"></div></div>
+      </section>
+    </div>
+  </main>
+
+  <script src="../assets/vendor/d3.v7.9.0.min.js"></script>
+  <script src="../assets/core.js"></script>
+  <script src="../assets/pages/sectors.js"></script>
+</body>
+</html>

@@ -126,7 +126,7 @@
         const va = val(a, state.key), vb = val(b, state.key);
         if (va == null) return 1;
         if (vb == null) return -1;
-        return (va < vb ? -1 : va > vb ? 1 : 0) * -state.dir;
+        return (va < vb ? -1 : va > vb ? 1 : 0) * state.dir;
       });
       tbody.innerHTML = list.map(rowHtml).join("");
     };
@@ -149,7 +149,7 @@
       `<strong>Drawdowns are the cost of equity returns.</strong> From its 1929 peak the S&amp;P 500 lost ${spct(yr("spx").value, 0)} and did not regain that level until ${yr("spx").recovered.slice(0, 4)}. The Nasdaq Composite fell ${spct(yr("ixic").value, 0)} after the dot-com bubble and took until ${yr("ixic").recovered.slice(0, 4)} to recover. Japan's Nikkei 225 peaked in ${nik.peak.slice(0, 4)} and ${nik.recovered ? `only reclaimed that high in ${nik.recovered.slice(0, 4)}` : "has not yet reclaimed that high"}. Time horizon matters as much as the asset.`,
       `<strong>Inflation and interest rates set the backdrop.</strong> Rising inflation usually means rising rates, and rates are the discount on every future cash flow. In 2022, with US inflation at ${pct(m22.cpi)} in December and the federal funds rate up ${(m22.fedfundsChange * 100).toFixed(1)} points over the year, the S&amp;P 500 fell ${spct(r22("spx"))} and long-dated Treasuries ${spct(r22("tlt"))}: stocks and bonds fell together, which a classic 60/40 portfolio is not built for.`,
       `<strong>Recessions and bear markets overlap, but not perfectly.</strong> Stocks tend to fall before a recession is declared and to recover before it ends. The economy page shades every NBER recession so the timing can be compared directly with returns, the yield curve and unemployment.`,
-      `<strong>Leadership rotates.</strong> The best-performing sector or region in one decade is rarely the leader in the next: technology led the late 1990s and the 2010s, energy and materials the 2000s commodity boom. Bitcoin and Ethereum add a different kind of risk, with drawdowns of ${spct(yr("btc").value, 0)} and ${spct(yr("eth").value, 0)} from their highs.`,
+      `<strong>Leadership rotates.</strong> The leaders of one decade are rarely the leaders of the next. In the 2000s energy was the best-performing US sector while technology lost money; in the 2010s technology and consumer discretionary led and energy came last. The sectors page tracks that rotation year by year. Bitcoin and Ethereum add a different kind of risk, with drawdowns of ${spct(yr("btc").value, 0)} and ${spct(yr("eth").value, 0)} from their highs.`,
     ];
     document.getElementById("framework").innerHTML = paras.map((p) => `<p>${p}</p>`).join("");
   }
