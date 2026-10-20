@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en" data-root="..">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Long Run · Market History</title>
+  <meta name="description" content="Growth of 100 since any start year for stock indices, bonds, gold, oil and crypto, with drawdowns and US recessions.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%231f3a5f'/%3E%3Cpath d='M12 44l12-12 9 7 19-21' fill='none' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../assets/theme.css">
+  <style>
+    .picker { display: grid; gap: 10px; margin-bottom: 16px; }
+    .picker-row { display: flex; gap: 12px; align-items: baseline; }
+    .picker-row > .lbl { width: 150px; flex-shrink: 0; font-size: 12px; color: var(--muted); font-weight: 600; }
+    @media (max-width: 640px) { .picker-row { flex-direction: column; gap: 4px; } }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="wrap">
+      <header class="page-head">
+        <p class="eyebrow">Market History</p>
+        <h1>The long run</h1>
+        <p class="lede">What 100 invested at the start of a year became, month by month. On a log scale, equal vertical distances are equal percentage moves, so a fall of 50% looks the same in 1932 as in 2008.</p>
+        <p class="updated" id="updated"></p>
+      </header>
+
+      <section class="block">
+        <div class="controls">
+          <span class="control">Presets <span id="presets"></span></span>
+        </div>
+        <div class="controls">
+          <label class="control">Start <select id="start"></select></label>
+          <span class="control">Scale <span id="scale"></span></span>
+          <span class="control">Recessions <span id="rec"></span></span>
+        </div>
+        <details class="card" id="picker-card">
+          <summary style="cursor:pointer;font-weight:600;font-size:14px">Choose assets <span class="muted" id="pick-count"></span></summary>
+          <div class="picker" id="picker" style="margin-top:14px"></div>
+          <p class="note">Up to 8 at a time. Assets without data at the start date are unavailable; pick a later start to include them.</p>
+        </details>
+      </section>
+
+      <section class="block">
+        <h2 id="growth-title">Growth of 100</h2>
+        <p class="sub">Monthly closes. Shaded bands are US recessions as dated by the NBER.</p>
+        <div class="card"><div class="chart" id="growth"></div><div id="growth-legend"></div></div>
+      </section>
+
+      <section class="block">
+        <h2>Drawdowns</h2>
+        <p class="sub">Distance below the running all-time high, measured on daily closes over each series' full history.</p>
+        <div class="card"><div class="chart" id="dd"></div></div>
+      </section>
+
+      <section class="block">
+        <h2>Over the selected period</h2>
+        <p class="sub">Computed from monthly closes over the window shown above.</p>
+        <div class="card table-scroll">
+          <table class="data" id="period">
+            <thead><tr><th>Asset</th><th>100 became</th><th>Total</th><th>Annualized</th><th>Volatility</th><th>Worst drawdown</th><th>Best year</th><th>Worst year</th><th>Up years</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="../assets/vendor/d3.v7.9.0.min.js"></script>
+  <script src="../assets/core.js"></script>
+  <script src="../assets/pages/longrun.js"></script>
+</body>
+</html>

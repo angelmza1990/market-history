@@ -86,7 +86,8 @@
   }
   function spct(x, d = 1) {
     if (x == null || Number.isNaN(x)) return "–";
-    const s = (Math.abs(x) * 100).toFixed(d);
+    const a = Math.abs(x) * 100;
+    const s = a >= 1000 ? Math.round(a).toLocaleString("en-US") : a.toFixed(d);
     if (+s === 0) return (0).toFixed(d) + "%";
     return (x > 0 ? "+" : MINUS) + s + "%";
   }
@@ -197,7 +198,8 @@
       const series = o.series.filter((s) => s.values.length);
       const labels = o.endLabels ?? series.length <= 4;
       const narrow = W < 560;
-      const m = { top: o.annotations.length ? 30 : 12, right: labels && !narrow ? 112 : 12, bottom: 26, left: 50 };
+      // reserveRight keeps stacked charts aligned with one that has end labels
+      const m = { top: o.annotations.length ? 30 : 12, right: (labels || o.reserveRight) && !narrow ? 112 : 12, bottom: 26, left: 50 };
       const H = narrow ? Math.min(o.height, 300) : o.height;
       const iw = W - m.left - m.right, ih = H - m.top - m.bottom;
 
@@ -246,7 +248,7 @@
       if (o.area) {
         const area = d3.area().defined((d) => d[1] != null).x((d) => x(d[0])).y0(y(o.baseline ?? 0)).y1((d) => y(d[1]));
         g.append("g").selectAll("path").data(series).join("path")
-          .attr("d", (s) => area(s.values)).attr("fill", (s) => s.color).attr("fill-opacity", series.length > 1 ? 0.08 : 0.16);
+          .attr("d", (s) => area(s.values)).attr("fill", (s) => s.color).attr("fill-opacity", series.length > 1 ? 0 : 0.14);
       }
       g.append("g").selectAll("path").data(series).join("path")
         .attr("d", (s) => line(s.values)).attr("fill", "none").attr("stroke", (s) => s.color)
