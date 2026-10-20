@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en" data-root=".">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Market History</title>
+  <meta name="description" content="Calendar-year returns, long-run growth and drawdowns for major stock indices, bonds, commodities, crypto and US sectors, set against the US economic cycle.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%231f3a5f'/%3E%3Cpath d='M12 44l12-12 9 7 19-21' fill='none' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/theme.css">
+</head>
+<body>
+  <main>
+    <div class="wrap">
+      <header class="page-head">
+        <p class="eyebrow">Markets &amp; the economy</p>
+        <h1>Market History</h1>
+        <p class="lede">Calendar-year returns, long-run growth and drawdowns for the major stock indices, bonds, commodities, crypto and US sectors, set against the US economic cycle.</p>
+        <p class="updated" id="updated"></p>
+      </header>
+
+      <section class="block">
+        <h2>Snapshot</h2>
+        <p class="sub">Latest close and change since the end of last year.</p>
+        <div class="tiles" id="tiles"></div>
+      </section>
+
+      <section class="block">
+        <h2 id="ytd-title">Year to date</h2>
+        <p class="sub">Return since the last close of the previous year, all assets except sectors.</p>
+        <div class="card"><div class="chart" id="ytd-chart"></div></div>
+      </section>
+
+      <section class="block">
+        <h2>All assets</h2>
+        <p class="sub">Returns over 3, 5 and 10 years are annualized. Drawdowns are measured from the running all-time high on daily closes. Click a column to sort.</p>
+        <div class="card table-scroll">
+          <table class="data" id="summary">
+            <thead>
+              <tr>
+                <th data-sort="name">Asset</th>
+                <th>Last</th>
+                <th data-sort="ytd">YTD</th>
+                <th data-sort="r1y">1 yr</th>
+                <th data-sort="cagr3">3 yr</th>
+                <th data-sort="cagr5">5 yr</th>
+                <th data-sort="cagr10">10 yr</th>
+                <th data-sort="fromHigh">From high</th>
+                <th data-sort="maxDrawdown">Max drawdown</th>
+                <th data-sort="upShare">Up years</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="block">
+        <h2>A framework for reading the cycle</h2>
+        <div class="prose" id="framework"></div>
+      </section>
+
+      <section class="block">
+        <h2>Explore</h2>
+        <div class="links-grid">
+          <a class="link-card" href="annual-returns/"><strong>Annual returns</strong><span>Every calendar year for every asset: which years were positive, which were negative, and how often.</span></a>
+          <a class="link-card" href="long-run/"><strong>Long run</strong><span>Growth of 100 since any start year, on a log scale, with drawdowns and US recessions.</span></a>
+          <a class="link-card" href="sectors/"><strong>Sectors</strong><span>The eleven S&amp;P 500 sectors: leadership by year, performance against the index and correlations.</span></a>
+          <a class="link-card" href="macro/"><strong>Economy</strong><span>Inflation, interest rates, the yield curve, unemployment and growth, year by year next to the S&amp;P 500.</span></a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="assets/vendor/d3.v7.9.0.min.js"></script>
+  <script src="assets/core.js"></script>
+  <script src="assets/pages/overview.js"></script>
+</body>
+</html>
