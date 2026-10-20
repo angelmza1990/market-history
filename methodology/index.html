@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en" data-root="..">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Methodology · Market History</title>
+  <meta name="description" content="Sources, definitions and limitations behind the Market History datasets.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%231f3a5f'/%3E%3Cpath d='M12 44l12-12 9 7 19-21' fill='none' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../assets/theme.css">
+  <style>
+    .prose h2 { color: var(--ink); margin: 32px 0 8px; }
+    .prose ul { margin: 0 0 12px; padding-left: 20px; }
+    .prose li { margin: 4px 0; }
+    .prose code { font-size: 13px; background: var(--hover); padding: 1px 5px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="wrap">
+      <header class="page-head">
+        <p class="eyebrow">Market History</p>
+        <h1>Methodology</h1>
+        <p class="lede">Where the numbers come from, how they are calculated, and what they leave out.</p>
+      </header>
+
+      <section class="block">
+        <div class="prose">
+          <h2>Sources</h2>
+          <ul>
+            <li><strong>Prices</strong>: daily closes from Yahoo Finance for indices, exchange-traded funds, futures and crypto. The ticker for every asset is listed in the summary table on the overview and in the performance table on the sectors page.</li>
+            <li><strong>Economic series</strong>: FRED, Federal Reserve Bank of St. Louis. Consumer prices (CPIAUCSL, CPILFESL), the effective federal funds rate (FEDFUNDS), 2- and 10-year Treasury yields (GS2, GS10), the unemployment rate (UNRATE), real GDP growth (A191RL1Q225SBEA quarterly, A191RL1A225NBEA annual), M2 (M2SL) and the NBER recession indicator (USREC).</li>
+            <li><strong>Volatility</strong>: the CBOE VIX index, from Yahoo Finance.</li>
+          </ul>
+          <p>Every source file is kept in the repository under <code>data/raw/</code>, so the site can be rebuilt even if a source changes. A scheduled job refreshes the data every weekday.</p>
+
+          <h2>Returns</h2>
+          <ul>
+            <li><strong>Calendar-year return</strong> = last close of the year ÷ last close of the previous year − 1.</li>
+            <li>A series' first year counts only if the series has a close in the previous year, so a partial first year is never shown as a full one. The current year is shown as year to date and is excluded from counts, averages, best and worst years.</li>
+            <li><strong>Price return</strong> for stock indices, futures, the dollar index and crypto: dividends are not included. Over long periods dividends add materially; for the S&amp;P 500 they have added roughly 1.5 to 2 percentage points a year since 2000, and more before that.</li>
+            <li><strong>Total return</strong> for ETFs (sectors, bond funds, emerging markets, Argentina) and for the DAX, which is itself a performance index: dividends and coupons are reinvested.</li>
+            <li><strong>Annualized return</strong> over <em>n</em> years = (end ÷ start)<sup>1/<em>n</em></sup> − 1.</li>
+            <li>All figures are in the currency of the index (US dollars for US assets, euros for the Euro Stoxx 50 and DAX, yen for the Nikkei, and so on), and nominal: they are not adjusted for inflation unless labeled as such.</li>
+          </ul>
+
+          <h2>Risk</h2>
+          <ul>
+            <li><strong>Drawdown</strong>: the percentage below the highest close reached so far, measured on daily closes from the start of each series. The overview and long-run pages show the deepest one and when it was recovered.</li>
+            <li><strong>Volatility</strong>: standard deviation of monthly returns, multiplied by √12.</li>
+            <li><strong>Beta and correlation</strong>: from monthly returns against the SPDR S&amp;P 500 ETF over the last 120 months, or the whole history when shorter.</li>
+          </ul>
+
+          <h2>Economic groupings</h2>
+          <ul>
+            <li>A <strong>recession year</strong> is one with at least one month marked as recession by the NBER.</li>
+            <li><strong>Inflation</strong> for a year is the December-to-December change in the CPI.</li>
+            <li><strong>Fed policy</strong> compares the December average federal funds rate with the previous December's.</li>
+            <li>The <strong>yield curve going in</strong> is the 10-year minus 2-year yield in the December before the year starts, so it is known in advance.</li>
+          </ul>
+          <p>These groupings describe history. With a few dozen years per group, a single year can move an average by several points, and none of them is a trading rule.</p>
+
+          <h2>Known limitations</h2>
+          <ul>
+            <li><strong>Commodities</strong> use the front-month futures contract as reported by Yahoo Finance, without adjustment for rolling between contracts, and start in 2000. Days with a zero or negative price (WTI on April 20, 2020) are left out of return and drawdown calculations.</li>
+            <li><strong>Index histories</strong> are limited to what Yahoo Finance provides: the Dow Jones from 1992, the Euro Stoxx 50 from 2007, the Nasdaq Composite from 1971.</li>
+            <li><strong>Crypto</strong> trades every day; its history starts in September 2014 (Bitcoin) and November 2017 (Ethereum).</li>
+            <li><strong>Argentina</strong> is represented by the Global X MSCI Argentina ETF in US dollars, which avoids the distortion of peso inflation but holds some companies listed abroad.</li>
+          </ul>
+
+          <h2>Reproduce it</h2>
+          <p>The code is on <a href="https://github.com/angelmza1990/market-history">GitHub</a>. <code>scripts/fetch_data.py</code> downloads the sources and <code>scripts/build_data.py</code> builds the datasets the pages read. The build checks the S&amp;P 500 against known calendar-year returns and stops if they do not match.</p>
+          <p class="muted">For research and education. Nothing on this site is investment advice.</p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="../assets/vendor/d3.v7.9.0.min.js"></script>
+  <script src="../assets/core.js"></script>
+  <script>MH.shell("method");</script>
+</body>
+</html>
