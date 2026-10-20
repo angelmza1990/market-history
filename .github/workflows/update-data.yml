@@ -1,0 +1,67 @@
+name: Update data
+
+# Downloads fresh prices and economic series after the US market close on weekdays,
+# rebuilds the datasets and commits them when anything changed.
+
+on:
+  schedule:
+    - cron: "30 22 * * 1-5"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: update-data
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # A failed download keeps that source's previous snapshot; the build still runs.
+      - name: Download sources
+        id: fetch
+        continue-on-error: true
+        run: python3 scripts/fetch_data.py
+
+      - name: Build datasets
+        run: python3 scripts/build_data.py
+
+      - name: Commit and push changes
+        id: commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data
+          if git diff --cached --quiet; then
+            echo "No data changes."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            git commit -m "Update data ($(date -u +%Y-%m-%d))"
+            git push
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # Pushes made with GITHUB_TOKEN don't trigger other workflows, so ask Pages to rebuild.
+      - name: Rebuild GitHub Pages
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api -X POST "repos/${{ github.repository }}/pages/builds"
+
+      - name: Report failed downloads
+        if: steps.fetch.outcome == 'failure'
+        run: |
+          echo "::error::Some sources could not be downloaded; their previous snapshot was kept. Check the 'Download sources' step."
+          exit 1
