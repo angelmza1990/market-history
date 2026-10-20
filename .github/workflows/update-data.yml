@@ -30,9 +30,14 @@ jobs:
         run: pip install -r requirements.txt
 
       # A failed download keeps that source's previous snapshot; the build still runs.
+      # FRED failures only warn; FRED_API_KEY (optional secret) avoids the CSV endpoint,
+      # which tends to time out from GitHub's runners.
       - name: Download sources
         id: fetch
         continue-on-error: true
+        timeout-minutes: 20
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
         run: python3 scripts/fetch_data.py
 
       - name: Build datasets
@@ -63,5 +68,5 @@ jobs:
       - name: Report failed downloads
         if: steps.fetch.outcome == 'failure'
         run: |
-          echo "::error::Some sources could not be downloaded; their previous snapshot was kept. Check the 'Download sources' step."
+          echo "::error::Some prices could not be downloaded; their previous snapshot was kept. Check the 'Download sources' step."
           exit 1

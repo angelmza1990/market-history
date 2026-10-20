@@ -6,12 +6,18 @@ Yahoo Finance prices go to data/raw/yahoo/<id>.csv (daily close and adjusted clo
 FRED series to data/raw/fred/<SERIES>.csv. The files are kept in the repo as a snapshot,
 so the site can be rebuilt even if a source changes or disappears.
 
+FRED is read through its API when FRED_API_KEY is set (free key from
+https://fred.stlouisfed.org/docs/api/api_key.html), otherwise through the public CSV
+download, which often times out from cloud servers such as GitHub's runners.
+
 A download that comes back shorter than the snapshot it would replace is rejected
 and the old file is kept.
 """
 
 import csv
 import io
+import json
+import os
 import sys
 import time
 import urllib.request
@@ -72,21 +78,30 @@ def fetch_yahoo(asset_id, ticker):
 
 
 def fetch_fred(series):
-    url = f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={series}"
+    key = os.environ.get("FRED_API_KEY")
+    if key:
+        url = ("https://api.stlouisfed.org/fred/series/observations"
+               f"?series_id={series}&api_key={key}&file_type=json")
+    else:
+        url = f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={series}"
     req = urllib.request.Request(url, headers={"User-Agent": "market-history/1.0"})
-    for attempt in range(3):
+    for attempt in range(2):
         try:
-            with urllib.request.urlopen(req, timeout=60) as resp:
+            with urllib.request.urlopen(req, timeout=30) as resp:
                 text = resp.read().decode()
             break
         except Exception as e:
-            print(f"  retry {series}: {e}")
-            time.sleep(5 * (attempt + 1))
+            print(f"  retry {series}: {type(e).__name__}")  # never print the URL: it holds the key
+            time.sleep(5)
     else:
         return False
-    reader = csv.reader(io.StringIO(text))
-    next(reader)
-    rows = [[d, v] for d, v in reader if v not in ("", ".")]
+    if key:
+        obs = json.loads(text)["observations"]
+        rows = [[o["date"], o["value"]] for o in obs if o["value"] not in ("", ".")]
+    else:
+        reader = csv.reader(io.StringIO(text))
+        next(reader)
+        rows = [[d, v] for d, v in reader if v not in ("", ".")]
     if not rows:
         print(f"  ! {series}: no data")
         return False
@@ -94,17 +109,30 @@ def fetch_fred(series):
 
 
 def main():
-    failures = []
+    """Exit 1 if any price failed; FRED failures only warn (its series change monthly)."""
+    in_ci = os.environ.get("GITHUB_ACTIONS") == "true"
+    yahoo_failed, fred_failed = [], []
     print("Yahoo Finance")
     for asset_id, ticker, *_ in ASSETS + [(i, t) for i, t, _ in LEVELS]:
         if not fetch_yahoo(asset_id, ticker):
-            failures.append(ticker)
-    print("FRED")
-    for series, *_ in FRED:
+            yahoo_failed.append(ticker)
+    print("FRED" + (" (API)" if os.environ.get("FRED_API_KEY") else " (CSV download)"))
+    names = [s for s, *_ in FRED]
+    for series in names:
         if not fetch_fred(series):
-            failures.append(series)
-    if failures:
-        print("Not updated:", ", ".join(failures))
+            fred_failed.append(series)
+            if fred_failed == names[:2]:
+                # the first two both failed: FRED is unreachable from here, skip the rest
+                fred_failed = names
+                break
+    if fred_failed:
+        msg = f"FRED not updated ({', '.join(fred_failed)}); the previous snapshot was kept."
+        if not os.environ.get("FRED_API_KEY"):
+            msg += " Set the FRED_API_KEY secret to use the FRED API."
+        print(f"::warning::{msg}" if in_ci else msg)
+    if yahoo_failed:
+        msg = f"Prices not updated: {', '.join(yahoo_failed)}; the previous snapshot was kept."
+        print(f"::error::{msg}" if in_ci else msg)
         sys.exit(1)
 
 
