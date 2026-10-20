@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en" data-root="..">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Annual Returns · Market History</title>
+  <meta name="description" content="Calendar-year returns for stock indices, bonds, commodities, crypto and US sectors: which years were positive, which were negative, and how often.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%231f3a5f'/%3E%3Cpath d='M12 44l12-12 9 7 19-21' fill='none' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../assets/theme.css">
+  <style>
+    .stat-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin: 0 0 16px; }
+    .stat-row .tile { padding: 10px 12px; }
+    .stat-row .value { font-size: 18px; }
+    .hist { display: flex; align-items: flex-end; gap: 3px; min-height: 120px; }
+    .hist .bin { flex: 1; display: flex; flex-direction: column-reverse; gap: 2px; min-width: 0; }
+    .hist .yr { font-size: 10.5px; line-height: 16px; height: 16px; text-align: center; border-radius: 2px; overflow: hidden; font-variant-numeric: tabular-nums; }
+    .hist .yr.ytd { outline: 1px dashed var(--ink-2); outline-offset: -1px; }
+    .hist-axis { display: flex; gap: 3px; margin-top: 6px; border-top: 1px solid var(--line-2); padding-top: 6px; }
+    .hist-axis span { flex: 1; text-align: center; font-size: 11px; color: var(--muted); min-width: 0; }
+    .hist-count { font-size: 11px; color: var(--muted); text-align: center; }
+    @media (max-width: 640px) { .hist .yr { font-size: 0; height: 8px; line-height: 8px; } }
+    .heat-wrap { max-height: 78vh; overflow: auto; }
+    .heat-wrap thead th { position: sticky; top: 0; background: var(--surface); z-index: 2; }
+    .heat-wrap thead th:first-child { left: 0; z-index: 3; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="wrap">
+      <header class="page-head">
+        <p class="eyebrow">Market History</p>
+        <h1>Annual returns</h1>
+        <p class="lede">Every calendar year for every asset. Blue cells are years that closed higher than they started, red cells years that closed lower. The current year is year to date.</p>
+        <p class="updated" id="updated"></p>
+      </header>
+
+      <section class="block">
+        <h2>Year by year</h2>
+        <p class="sub" id="heat-sub">Return from the last close of one year to the last close of the next. A series' first, partial year is left out.</p>
+        <div class="controls"><div id="group-seg"></div></div>
+        <div class="card">
+          <div class="heat-wrap"><table class="heat" id="heat"></table></div>
+          <div id="heat-legend"></div>
+        </div>
+      </section>
+
+      <section class="block">
+        <h2>One asset in depth</h2>
+        <p class="sub">Pick an asset to see its full record of calendar years and how those years are distributed.</p>
+        <div class="controls">
+          <label class="control">Asset <select id="asset-select"></select></label>
+        </div>
+        <div class="stat-row" id="asset-stats"></div>
+        <div class="card">
+          <h3 id="bars-title">Calendar-year returns</h3>
+          <div class="chart" id="bars"></div>
+          <p class="note" id="bars-note"></p>
+        </div>
+        <div class="card">
+          <h3>How the years are distributed</h3>
+          <div id="hist"></div>
+          <p class="note">Each box is one calendar year, placed in its 10-point return band. The current year, still in progress, has a dashed outline.</p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="../assets/vendor/d3.v7.9.0.min.js"></script>
+  <script src="../assets/core.js"></script>
+  <script src="../assets/pages/annual.js"></script>
+</body>
+</html>

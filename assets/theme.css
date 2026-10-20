@@ -92,7 +92,7 @@ a { color: var(--accent); text-underline-offset: 3px; }
 .topbar-inner { display: flex; align-items: center; gap: 28px; height: 56px; }
 .brand { color: var(--ink); text-decoration: none; font-weight: 650; letter-spacing: -0.01em; font-size: 16px; white-space: nowrap; }
 .brand span { color: var(--muted); font-weight: 400; }
-.nav { display: flex; gap: 4px; margin: 0 auto 0 0; padding: 0; list-style: none; overflow-x: auto; scrollbar-width: none; }
+.nav { display: flex; gap: 4px; margin: 0 auto 0 0; padding: 0; list-style: none; overflow-x: auto; scrollbar-width: none; min-width: 0; }
 .nav a {
   display: block; padding: 6px 10px; border-radius: 6px;
   color: var(--ink-2); text-decoration: none; font-size: 14px; white-space: nowrap;

@@ -170,13 +170,17 @@
 
   // ---------- responsive render ----------
   function responsive(el, draw) {
+    // Calling a chart again on the same element only swaps its draw function.
+    if (el.__draw) { el.__draw = draw; el.__run(); return el.__run; }
+    el.__draw = draw;
     let last = 0;
     const run = () => {
       const w = el.clientWidth;
       if (!w) return;
       last = w;
-      draw(w);
+      el.__draw(w);
     };
+    el.__run = run;
     new ResizeObserver(() => { if (el.clientWidth !== last) run(); }).observe(el);
     onTheme(run);
     run();
@@ -317,7 +321,8 @@
       const iw = W - m.left - m.right, ih = H - m.top - m.bottom;
       const x = d3.scaleBand().domain(data.map((d) => d.year)).range([0, iw]).paddingInner(data.length > 40 ? 0.18 : 0.25);
       const ext = d3.extent(data, (d) => d.value);
-      const y = d3.scaleLinear().domain([Math.min(0, ext[0]), Math.max(0, ext[1])]).nice().range([ih, 0]);
+      // headroom so the best/worst labels clear the plot edges
+      const y = d3.scaleLinear().domain([Math.min(0, ext[0] * 1.12), Math.max(0, ext[1] * 1.12)]).nice().range([ih, 0]);
 
       const svg = d3.create("svg").attr("viewBox", `0 0 ${W} ${H}`).attr("role", "img").attr("aria-label", o.label || "");
       const g = svg.append("g").attr("transform", `translate(${m.left},${m.top})`);
