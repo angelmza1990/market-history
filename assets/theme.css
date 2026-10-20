@@ -261,3 +261,4 @@ table.heat tfoot th { position: sticky; left: 0; background: var(--surface); tex
 .table-scroll table.data tr.group-row td { background: var(--bg); }
 .control { min-width: 0; max-width: 100%; }
 .control select { min-width: 0; max-width: 100%; text-overflow: ellipsis; }
+.grid-2 > *, .grid-3 > *, .multiples > * { min-width: 0; }

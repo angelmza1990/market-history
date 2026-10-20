@@ -289,7 +289,7 @@
             .attr("r", 3.5).attr("cx", (p) => x(p.d[0])).attr("cy", (p) => y(p.d[1]))
             .attr("fill", (p) => p.s.color).attr("stroke", "var(--surface)").attr("stroke-width", 2);
           const rows = pts.slice().sort((a, b) => b.d[1] - a.d[1])
-            .map((p) => ({ color: p.s.color, value: (o.tipFormat || o.yFormat)(p.d[1]), label: p.s.name }));
+            .map((p) => ({ color: p.s.color, value: (o.tipFormat || o.yFormat)((o.rawValue && o.rawValue(p.s, p.d)) ?? p.d[1]), label: p.s.name }));
           showTip(evt, (o.tipDate || fmtMonth)(at), rows);
         })
         .on("pointerleave", () => { cross.style("display", "none"); dots.style("display", "none"); hideTip(); });

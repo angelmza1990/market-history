@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en" data-root="..">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Economy · Market History</title>
+  <meta name="description" content="US inflation, interest rates, the yield curve, unemployment and growth, with recessions, set year by year next to stock, bond, gold and oil returns.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%231f3a5f'/%3E%3Cpath d='M12 44l12-12 9 7 19-21' fill='none' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../assets/theme.css">
+  <style>
+    .panels { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .panels .card { margin: 0; min-width: 0; }
+    .panels .card + .card { margin: 0; }
+    .panels h3 { text-transform: none; letter-spacing: 0; font-size: 15px; color: var(--ink); margin: 0; }
+    .panels .meta { font-size: 13px; color: var(--ink-2); margin: 2px 0 8px; }
+    .panels .meta b { font-weight: 600; color: var(--ink); }
+    @media (max-width: 860px) { .panels { grid-template-columns: 1fr; } }
+    table.data td.cell-ret { font-weight: 600; }
+    .regimes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 860px) { .regimes { grid-template-columns: 1fr; } }
+    .regimes .card { margin: 0; min-width: 0; overflow-x: auto; }
+    .regimes .card + .card { margin: 0; }
+    .regimes h3 { text-transform: none; letter-spacing: 0; font-size: 15px; color: var(--ink); margin: 0 0 4px; }
+    .regimes p { font-size: 13px; color: var(--ink-2); margin: 0 0 10px; }
+    .bar-in { display: inline-block; height: 8px; border-radius: 2px; vertical-align: middle; }
+    .rec-tag { font-size: 11px; font-weight: 600; letter-spacing: 0.04em; color: var(--ink-2); background: var(--recession); padding: 1px 6px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="wrap">
+      <header class="page-head">
+        <p class="eyebrow">Market History</p>
+        <h1>Markets and the economy</h1>
+        <p class="lede">The US economic cycle in eight indicators, with every NBER recession shaded, and what the S&amp;P 500 did under each kind of backdrop. The aim is a frame of reference, not a forecast: the patterns below rest on a few dozen observations and many exceptions.</p>
+        <p class="updated" id="updated"></p>
+      </header>
+
+      <section class="block">
+        <h2>The cycle at a glance</h2>
+        <p class="sub">Monthly data from FRED. Shaded bands are recessions.</p>
+        <div class="controls"><span class="control">Since <span id="since"></span></span></div>
+        <div class="panels" id="panels"></div>
+      </section>
+
+      <section class="block">
+        <h2>The S&amp;P 500 under different backdrops</h2>
+        <p class="sub">Calendar-year S&amp;P 500 price returns, grouped by what the economy was doing that year. Average and median returns, and how often the year ended higher.</p>
+        <div class="regimes" id="regimes"></div>
+        <p class="note">Inflation is the December-to-December change in the CPI. Fed policy compares the December federal funds rate with the previous December. The yield curve is the 10-year minus 2-year Treasury yield in December of the previous year, so the grouping is known before the year starts.</p>
+      </section>
+
+      <section class="block">
+        <h2>Decade by decade</h2>
+        <p class="sub">Annualized returns per decade next to average inflation. Gold, oil and bond funds start in the 2000s.</p>
+        <div class="card table-scroll"><table class="data" id="decades"></table></div>
+      </section>
+
+      <section class="block">
+        <h2>Year by year</h2>
+        <p class="sub">Returns are calendar-year; economic readings are December values unless noted.</p>
+        <div class="card table-scroll" style="max-height:80vh;overflow:auto">
+          <table class="data" id="years"></table>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="../assets/vendor/d3.v7.9.0.min.js"></script>
+  <script src="../assets/core.js"></script>
+  <script src="../assets/pages/macro.js"></script>
+</body>
+</html>
