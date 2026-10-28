@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en" data-root="..">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Seasonality · Market History</title>
+  <meta name="description" content="Returns by calendar month for stock indices, bonds, commodities and crypto: the average month with its uncertainty, how often each month rises, every month since the series began, and the 'sell in May' halves of the year.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%231f3a5f'/%3E%3Cpath d='M12 44l12-12 9 7 19-21' fill='none' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../assets/theme.css">
+  <style>
+    .stat-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin: 0 0 16px; }
+    .stat-row .tile { padding: 10px 12px; }
+    .stat-row .value { font-size: 18px; }
+    #months svg { display: block; width: 100%; height: auto; }
+    #months text { font: 11px var(--sans); fill: var(--muted); font-variant-numeric: tabular-nums; }
+    #months .lbl { fill: var(--ink-2); font-weight: 600; }
+    .heat-wrap { max-height: 72vh; overflow: auto; }
+    .heat-wrap thead th { position: sticky; top: 0; background: var(--surface); z-index: 2; }
+    .heat-wrap thead th:first-child { left: 0; z-index: 3; }
+    table.heat.months td { min-width: 46px; }
+    table.heat.months td.total { font-weight: 650; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="wrap">
+      <header class="page-head">
+        <p class="eyebrow">Market History</p>
+        <h1>Seasonality</h1>
+        <p class="lede">Do some months really beat others? The average return of each calendar month, how often it rose, every month on record, and the old saying "sell in May and go away", tested on the data. Seasonal patterns are famous, but most are small next to the month-to-month noise.</p>
+        <p class="updated" id="updated"></p>
+      </header>
+
+      <section class="block">
+        <div class="controls">
+          <label class="control">Asset <select id="asset-select"></select></label>
+          <span class="control">Period <span id="window"></span></span>
+        </div>
+        <div class="stat-row" id="stats"></div>
+        <div class="card">
+          <h3 id="months-title">Average return by calendar month</h3>
+          <div id="months"></div>
+          <p class="note">Bars: the average return of each month. Whiskers: about two standard errors either side, a rough 95% range for the true average; a whisker that crosses zero means that month's average cannot be told apart from zero. Below each bar, the share of years in which that month rose.</p>
+        </div>
+      </section>
+
+      <section class="block">
+        <h2>Month by month</h2>
+        <div class="card table-scroll"><table class="data" id="table"></table></div>
+      </section>
+
+      <section class="block">
+        <h2>Sell in May?</h2>
+        <p class="sub" id="halves-sub">Growth of 100 invested only from November to April, against only from May to October, out of the market the rest of the year (no interest on cash).</p>
+        <div class="card">
+          <div class="chart" id="halves"></div>
+          <div class="legend" id="halves-legend"></div>
+        </div>
+      </section>
+
+      <section class="block">
+        <h2>Every month</h2>
+        <p class="sub">Return of each month, from one month-end close to the next, with the calendar-year total on the right. The current month, still in progress, is left out.</p>
+        <div class="card">
+          <div class="heat-wrap"><table class="heat months" id="heat"></table></div>
+          <div class="legend" id="heat-legend"></div>
+        </div>
+      </section>
+
+      <section class="block">
+        <h2>Reading it</h2>
+        <div class="prose">
+          <p><strong>Noise is large.</strong> A typical stock index moves 4% to 5% in a month, while the gaps between the average months are often below 1%. With a few decades of data, the standard error of each month's average is close to a percentage point, so differences between months are mostly within what chance alone would produce.</p>
+          <p><strong>Twelve tries.</strong> Looking at twelve months and pointing to the best is a multiple comparison: one month in twenty will look significant at the 95% level by luck. A seasonal effect is more believable when it holds in different periods and different markets, which is why the period buttons are there.</p>
+          <p><strong>Not advice.</strong> This page describes the past. Trading on calendar patterns adds costs and taxes, and patterns that become well known tend to fade.</p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="../assets/vendor/d3.v7.9.0.min.js"></script>
+  <script src="../assets/core.js"></script>
+  <script src="../assets/pages/seasonality.js"></script>
+</body>
+</html>

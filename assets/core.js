@@ -6,6 +6,7 @@
     { id: "overview", href: "", label: "Overview" },
     { id: "annual", href: "annual-returns/", label: "Annual returns" },
     { id: "longrun", href: "long-run/", label: "Long run" },
+    { id: "seasonality", href: "seasonality/", label: "Seasonality" },
     { id: "sectors", href: "sectors/", label: "Sectors" },
     { id: "valuation", href: "valuation/", label: "Valuation" },
     { id: "portfolio", href: "portfolio/", label: "Portfolio check" },
