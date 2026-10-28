@@ -68,6 +68,12 @@ LEVELS = [
     ("vix", "^VIX", "CBOE Volatility Index (VIX)"),
 ]
 
+# Valuation page: the S&P 500 constituents are read from Wikipedia. Stocks outside the index
+# can be added here as (ticker, name, GICS sector, sub-industry); they are compared with the
+# S&P 500 companies of the same sector.
+EXTRA_STOCKS = [
+]
+
 # FRED series (id, name, frequency of the source)
 FRED = [
     ("USREC", "NBER US recession indicator", "monthly"),

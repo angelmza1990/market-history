@@ -7,6 +7,7 @@
     { id: "annual", href: "annual-returns/", label: "Annual returns" },
     { id: "longrun", href: "long-run/", label: "Long run" },
     { id: "sectors", href: "sectors/", label: "Sectors" },
+    { id: "valuation", href: "valuation/", label: "Valuation" },
     { id: "macro", href: "macro/", label: "Economy" },
     { id: "method", href: "methodology/", label: "Methodology" },
   ];
@@ -55,7 +56,7 @@
     footer.className = "footer";
     footer.innerHTML = `
       <div class="wrap">
-        <p>Data: Yahoo Finance (prices) and FRED, Federal Reserve Bank of St. Louis (economic series).
+        <p>Data: Yahoo Finance (prices and company fundamentals), FRED, Federal Reserve Bank of St. Louis (economic series), and Wikipedia (S&amp;P 500 constituents).
         Index returns exclude dividends unless marked as total return. For research and education; not investment advice.
         <a href="${ROOT}/methodology/">Methodology</a>.</p>
         <p>Built by <a href="https://angelmza1990.github.io">Angel Villanueva</a> ·
@@ -191,7 +192,7 @@
   // ---------- line chart ----------
   // opts: series [{id, name, color, values: [[Date, v]]}], log, yFormat, tipFormat,
   //       height, recessions [[Date, Date]], annotations [{date, label}], area, baseline,
-  //       endLabels, yDomain
+  //       endLabels, yDomain, band {lo, hi, label}: a shaded horizontal range
   function lineChart(el, opts) {
     const o = Object.assign({ height: 360, yFormat: (v) => v, log: false, area: false, recessions: [], annotations: [] }, opts);
     return responsive(el, (W) => {
@@ -206,6 +207,7 @@
       const all = series.flatMap((s) => s.values);
       const x = d3.scaleTime().domain(o.xDomain || d3.extent(all, (d) => d[0])).range([0, iw]);
       let yd = o.yDomain || d3.extent(all, (d) => d[1]);
+      if (o.band) yd = [Math.min(yd[0], o.band.lo), Math.max(yd[1], o.band.hi)];
       if (o.baseline != null) yd = [Math.min(yd[0], o.baseline), Math.max(yd[1], o.baseline)];
       const y = (o.log ? d3.scaleLog() : d3.scaleLinear()).domain(yd).range([ih, 0]);
       if (!o.log) y.nice();
@@ -231,6 +233,12 @@
         g.append("line").attr("class", "baseline").attr("x1", 0).attr("x2", iw).attr("y1", y(o.baseline)).attr("y2", y(o.baseline));
       }
 
+      if (o.band) {
+        const bg = g.append("g").attr("class", "band");
+        bg.append("rect").attr("x", 0).attr("width", iw).attr("y", y(o.band.hi)).attr("height", Math.max(1, y(o.band.lo) - y(o.band.hi)));
+        if (o.band.label) bg.append("text").attr("x", 6).attr("y", y(o.band.hi) + 13).text(o.band.label);
+      }
+
       // annotations: hairline + label, staggered on two rows
       const ann = g.append("g").attr("class", "annot");
       let lastX = [-1e9, -1e9];
@@ -253,6 +261,7 @@
       g.append("g").selectAll("path").data(series).join("path")
         .attr("d", (s) => line(s.values)).attr("fill", "none").attr("stroke", (s) => s.color)
         .attr("stroke-width", (s) => s.width || (series.length > 6 ? 1.5 : 2)).attr("stroke-linejoin", "round")
+        .attr("stroke-dasharray", (s) => s.dash || null)
         .attr("opacity", (s) => s.opacity ?? 1);
 
       // end labels, pushed apart so they never overlap

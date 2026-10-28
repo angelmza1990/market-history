@@ -1,6 +1,6 @@
 # Market History
 
-A long-run view of markets and the economy: calendar-year returns, growth, drawdowns and correlations for major stock indices, bonds, commodities, crypto and the eleven US sectors, set against US inflation, interest rates, unemployment, growth and recessions.
+A long-run view of markets and the economy: calendar-year returns, growth, drawdowns and correlations for major stock indices, bonds, commodities, crypto and the eleven US sectors, set against US inflation, interest rates, unemployment, growth and recessions; and the valuation of every S&P 500 company against its own history and its sector.
 
 **Live site:** https://angelmza1990.github.io/market-history/
 
@@ -10,6 +10,7 @@ A long-run view of markets and the economy: calendar-year returns, growth, drawd
 - **[Annual returns](https://angelmza1990.github.io/market-history/annual-returns/)**: a heatmap of every calendar year for every asset, with up and down years, averages, best and worst years and the longest losing streak; and one asset in depth, with its year-by-year bars and the distribution of its years in 10-point bands.
 - **[Long run](https://angelmza1990.github.io/market-history/long-run/)**: growth of 100 from any start year since 1928, on a log or linear scale, with US recessions and major market events, drawdowns from the all-time high, and statistics for the chosen window.
 - **[Sectors](https://angelmza1990.github.io/market-history/sectors/)**: sector leadership by year, performance with volatility, beta and correlation, returns against the S&P 500 year by year, one panel per sector, and a correlation matrix with bonds, gold, oil and Bitcoin.
+- **[Valuation](https://angelmza1990.github.io/market-history/valuation/)**: trailing P/E and EV/EBITDA for every S&P 500 company, month by month, against the company's own last ten years and the median of its sector; a signal (undervalued, fairly valued, overvalued) built from those comparisons; a searchable company view, an alerts table filterable by sector and signal, and sector medians over time.
 - **[Economy](https://angelmza1990.github.io/market-history/macro/)**: inflation, interest rates, the yield curve, unemployment, GDP growth, money supply, volatility and market stress; S&P 500 returns grouped by recession, inflation, Fed policy and the shape of the yield curve; decade-by-decade returns against inflation; and a year-by-year table.
 - **[Methodology](https://angelmza1990.github.io/market-history/methodology/)**: sources, definitions and limitations.
 
@@ -23,6 +24,7 @@ A long-run view of markets and the economy: calendar-year returns, growth, drawd
 | Commodities | Gold, silver, copper, WTI crude, natural gas, wheat, corn, soybeans | 2000 |
 | Crypto | Bitcoin, Ethereum | 2014 |
 | US sectors | The eleven Select Sector SPDR ETFs and the SPDR S&P 500 ETF | 1999 |
+| Valuation | Every S&P 500 company (Wikipedia's constituents list, GICS sectors); P/E from quarterly earnings reports, EV/EBITDA from Yahoo's statements | 2005 (P/E), 2022 (EV/EBITDA) |
 | Economy | CPI, core CPI, federal funds rate, 2- and 10-year yields, unemployment, real GDP, M2, VIX, NBER recessions | 1854 (recessions) |
 
 Index returns exclude dividends; ETF returns are total returns with dividends reinvested. See the methodology page for details.
@@ -35,6 +37,8 @@ The site is static HTML, CSS and JavaScript with [D3.js](https://d3js.org/) (ven
 scripts/universe.py     the assets and series covered
 scripts/fetch_data.py   downloads Yahoo Finance and FRED data into data/raw/
 scripts/build_data.py   builds data/markets.json and data/macro.json
+scripts/fetch_valuation.py  downloads S&P 500 constituents, prices, earnings and statements into data/raw/valuation/
+scripts/build_valuation.py  builds data/valuation.json
 scripts/check_pages.mjs opens every page in headless Chrome
 ```
 
@@ -52,6 +56,8 @@ python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
 .venv/bin/python scripts/fetch_data.py   # optional: refresh the snapshot
 .venv/bin/python scripts/build_data.py
+.venv/bin/python scripts/fetch_valuation.py --all   # optional: every company's fundamentals (~15 min)
+.venv/bin/python scripts/build_valuation.py
 python3 -m http.server 8080
 ```
 
@@ -63,4 +69,4 @@ For research and education. Nothing here is investment advice.
 
 ## License
 
-MIT. Data belongs to its providers: Yahoo Finance and the Federal Reserve Bank of St. Louis (FRED).
+MIT. Data belongs to its providers: Yahoo Finance and the Federal Reserve Bank of St. Louis (FRED). The list of S&P 500 companies comes from Wikipedia (CC BY-SA 4.0).

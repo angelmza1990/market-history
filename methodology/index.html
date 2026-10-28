@@ -59,6 +59,18 @@
           </ul>
           <p>These groupings describe history. With a few dozen years per group, a single year can move an average by several points, and none of them is a trading rule.</p>
 
+          <h2>Valuation</h2>
+          <ul>
+            <li><strong>Companies</strong>: the S&amp;P 500 constituents and their GICS sectors, from Wikipedia's list of S&amp;P 500 companies, one row per company (Class A shares for Alphabet, Fox and News Corp).</li>
+            <li><strong>P/E</strong> = month-end close ÷ the sum of the last four quarterly earnings per share, as reported in Yahoo Finance's earnings history. Each quarter counts from its report date, so no month uses figures that were not yet public. Four reports must span three quarters; a gap leaves the months empty. Negative earnings, and multiples above 1,000, are not meaningful and are left out.</li>
+            <li><strong>EV/EBITDA</strong> = (month-end close × shares outstanding + total debt − cash and short-term investments) ÷ EBITDA of the last twelve months, from Yahoo Finance's annual and quarterly statements, using normalized EBITDA when it is available. Each period counts from the first earnings report after it ends. Yahoo publishes about four years of statements, so the series starts in 2022. Not computed for the Financials sector.</li>
+            <li><strong>Own history</strong>: today's value is ranked among the monthly values of the last 120 months (at least 36 for P/E, 24 for EV/EBITDA). The usual range is the 20th to the 80th percentile.</li>
+            <li><strong>Sector</strong>: today's value divided by the median of the companies in the same sector with a meaningful value. Sector medians over time use the current members of the index, so companies that left it are missing from the past.</li>
+            <li><strong>Signal</strong>: each comparison votes −1 (in the cheapest 20% of its history, or below 0.8× the sector median), +1 (in the most expensive 20%, or above 1.25×) or 0. The average of the votes is the score: −0.5 or below is undervalued, +0.5 or above overvalued, anything between fairly valued.</li>
+            <li>Prices are refreshed every weekday. Earnings and statements are refreshed when a company reports, or at least once a week.</li>
+          </ul>
+          <p>Multiples ignore growth, the quality of earnings and where a company is in its cycle, so the signal describes price relative to the past and to peers, not what a business is worth.</p>
+
           <h2>Known limitations</h2>
           <ul>
             <li><strong>Commodities</strong> use the front-month futures contract as reported by Yahoo Finance, without adjustment for rolling between contracts, and start in 2000. Days with a zero or negative price (WTI on April 20, 2020) are left out of return and drawdown calculations.</li>

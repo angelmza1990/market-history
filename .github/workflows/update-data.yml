@@ -40,8 +40,18 @@ jobs:
           FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
         run: python3 scripts/fetch_data.py
 
+      # Prices for every S&P 500 company; earnings and statements only for companies that
+      # reported since the last run or whose data is a week old (at most 200 per run).
+      - name: Download valuation sources
+        id: fetch_valuation
+        continue-on-error: true
+        timeout-minutes: 25
+        run: python3 scripts/fetch_valuation.py
+
       - name: Build datasets
-        run: python3 scripts/build_data.py
+        run: |
+          python3 scripts/build_data.py
+          python3 scripts/build_valuation.py
 
       - name: Commit and push changes
         id: commit
@@ -66,7 +76,7 @@ jobs:
         run: gh api -X POST "repos/${{ github.repository }}/pages/builds"
 
       - name: Report failed downloads
-        if: steps.fetch.outcome == 'failure'
+        if: steps.fetch.outcome == 'failure' || steps.fetch_valuation.outcome == 'failure'
         run: |
-          echo "::error::Some prices could not be downloaded; their previous snapshot was kept. Check the 'Download sources' step."
+          echo "::error::Some downloads failed; their previous snapshot was kept. Check the 'Download sources' and 'Download valuation sources' steps."
           exit 1

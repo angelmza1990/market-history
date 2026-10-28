@@ -19,6 +19,7 @@
   --pos-ink: #1c5cab; --neg-ink: #b42f2f;
   --on-strong: #ffffff;
   --recession: rgba(17, 20, 24, 0.06);
+  --band: rgba(42, 120, 214, 0.1);
 
   /* Categorical series, fixed order */
   --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100;
@@ -45,6 +46,7 @@
     --pos-ink: #7fb0ec; --neg-ink: #ee8a88;
     --on-strong: #0f1012;
     --recession: rgba(255, 255, 255, 0.06);
+    --band: rgba(57, 135, 229, 0.16);
     --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
     --s5: #d55181; --s6: #008300; --s7: #9085e9; --s8: #e66767;
   }
@@ -66,6 +68,7 @@
   --pos-ink: #7fb0ec; --neg-ink: #ee8a88;
   --on-strong: #0f1012;
   --recession: rgba(255, 255, 255, 0.06);
+  --band: rgba(57, 135, 229, 0.16);
   --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
   --s5: #d55181; --s6: #008300; --s7: #9085e9; --s8: #e66767;
 }
@@ -213,6 +216,8 @@ table.heat tfoot th { position: sticky; left: 0; background: var(--surface); tex
 .chart .baseline { stroke: var(--line-2); }
 .chart .annot text { fill: var(--ink-2); font-size: 11px; }
 .chart .annot line { stroke: var(--line-2); }
+.chart .band rect { fill: var(--band); }
+.chart .band text { fill: var(--pos-ink); font-size: 11px; }
 .chart .crosshair { stroke: var(--ink-2); stroke-width: 1; pointer-events: none; }
 .tooltip {
   position: fixed; z-index: 50; pointer-events: none; min-width: 140px; max-width: 280px;
