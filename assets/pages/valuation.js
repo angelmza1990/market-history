@@ -1,12 +1,16 @@
-// Valuation: company lookup with P/E and EV/EBITDA over time, the alerts table and sector medians.
+// Valuation: company lookup with multiples, yields and quality, the alerts table and sector medians.
 (function () {
   const { num } = MH;
   MH.shell("valuation");
 
   const QUICK = ["GOOGL", "AAPL", "META", "NVDA", "TSLA"];
   const SIGNALS = { under: "Undervalued", fair: "Fairly valued", over: "Overvalued", none: "Not rated" };
-  const METRICS = { pe: "P/E", ev: "EV/EBITDA" };
+  const METRICS = { pe: "P/E", ev: "EV/EBITDA", dy: "Dividend yield", fcf: "FCF yield" };
   const X = (v) => (v == null ? "–" : `${num(v, v >= 100 ? 0 : 1)}×`);
+  const Y = (v) => (v == null ? "–" : `${num(v, 2)}%`);
+  const P = (v, d = 0) => (v == null ? "–" : MH.pct(v, d));
+  const FMT = { pe: X, ev: X, dy: Y, fcf: Y };
+  const QUALITY = { high: "High quality", average: "Average quality", low: "Low quality" };
   const ord = (p) => {
     const n = Math.min(99, Math.max(1, Math.round(p * 100)));
     const s = n % 100 >= 11 && n % 100 <= 13 ? "th" : ["th", "st", "nd", "rd"][n % 10] || "th";
@@ -133,8 +137,12 @@
 
       chart("pe", c, sec);
       chart("ev", c, sec);
+      chart("dy", c, sec);
+      chart("fcf", c, sec);
       legend();
       why(c, sec);
+      growth(c, sec);
+      quality(c, sec);
       highlightRow();
       if (scroll) document.getElementById("company").scrollIntoView({ behavior: "smooth", block: "start" });
     }
@@ -146,7 +154,7 @@
       if (!s || c[k].na) {
         const msg = Object.assign(document.createElement("p"), {
           className: "empty-chart",
-          textContent: c[k].na ? "EV/EBITDA is not used for financial companies." : "Not enough data.",
+          textContent: c[k].na ? `${METRICS[k]} is not used for financial companies.` : "Not enough data.",
         });
         MH.responsive(el, () => el.replaceChildren(msg));
         note.textContent = "";
@@ -154,14 +162,15 @@
       }
       const own = months(s);
       const last = own[own.length - 1][0];
-      const from = k === "pe" ? d3.timeMonth.offset(last, -(R.historyMonths - 1)) : own[0][0];
+      const from = d3.max([own[0][0], d3.timeMonth.offset(last, -(R.historyMonths - 1))]);
       const inRange = (d) => d[0] >= from;
       const values = own.filter(inRange);
       const sectorVals = sec.series[k] ? months(sec.series[k]).filter(inRange) : [];
       const all = values.concat(sectorVals).map((d) => d[1]).filter((v) => v != null);
       const lo = d3.min(all), hi = d3.max(all);
       const m = c[k];
-      note.textContent = k === "pe" ? "last 10 years" : `since ${MH.fmtMonth(own[0][0])}`;
+      note.textContent = from > own[0][0] ? "last 10 years" : `since ${MH.fmtMonth(own[0][0])}`;
+      const yields = k === "dy" || k === "fcf";
       MH.lineChart(el, {
         height: 280,
         label: `${METRICS[k]} of ${c.n} and the ${c.s} median`,
@@ -170,10 +179,11 @@
           { id: "own", name: c.t, color: "var(--s1)", values },
         ],
         xDomain: [from, last],
-        log: lo > 0 && hi / lo > 8,
+        log: !yields && lo > 0 && hi / lo > 8,
+        baseline: yields && lo < 0 ? 0 : null,
         band: m.p20 != null ? { lo: m.p20, hi: m.p80, label: "usual range" } : null,
-        yFormat: (v) => num(v, v >= 10 || Number.isInteger(v) ? 0 : 1),
-        tipFormat: X,
+        yFormat: yields ? (v) => `${num(v, Math.abs(v) >= 10 || Number.isInteger(v) ? 0 : 1)}%` : (v) => num(v, v >= 10 || Number.isInteger(v) ? 0 : 1),
+        tipFormat: FMT[k],
         endLabels: false,
       });
     }
@@ -227,6 +237,52 @@
       }
     }
 
+    function growth(c, sec) {
+      const g = c.growth, sn = sec.now;
+      const vs = (v, med, f) => (med == null ? "" : `sector median ${f(med)}`);
+      const histNote = (m) => (m.pct == null ? "" : `${ord(m.pct)} percentile of its history`);
+      document.getElementById("co-growth").replaceChildren(...[
+        { label: "Forward P/E", value: X(g.fwdPe), delta: [g.epsGrowth != null ? `EPS expected ${MH.spct(g.epsGrowth, 0)} in 12 months` : "", vs(g.fwdPe, sn.fwdPe, X)].filter(Boolean).join(" · ") },
+        { label: "PEG ratio", value: g.peg == null ? "–" : num(g.peg, 2), delta: vs(g.peg, sn.peg, (v) => num(v, 2)) },
+        { label: "Dividend yield", value: Y(c.dy.now), delta: [histNote(c.dy), vs(c.dy.now, sec.dy.now, Y)].filter(Boolean).join(" · ") },
+        { label: "FCF yield", value: c.fcf.na ? "n/a" : Y(c.fcf.now), delta: c.fcf.na ? "not used for financial companies" : [histNote(c.fcf), vs(c.fcf.now, sec.fcf.now, Y)].filter(Boolean).join(" · ") },
+      ].map(tile));
+      const out = [];
+      if (g.fwdPe != null && c.pe.now != null) {
+        out.push(g.fwdPe < c.pe.now
+          ? `On next year's expected earnings the P/E falls from ${X(c.pe.now)} to ${X(g.fwdPe)}: analysts expect profits to grow.`
+          : `On next year's expected earnings the P/E rises from ${X(c.pe.now)} to ${X(g.fwdPe)}: analysts expect profits to shrink.`);
+      }
+      if (g.peg != null) {
+        out.push(`PEG of ${num(g.peg, 2)}: the P/E divided by the expected yearly EPS growth over the next five years. ${g.peg < 1 ? "Below 1, the multiple is low for the growth expected" : g.peg > 2 ? "Above 2, the multiple is high even allowing for the growth expected" : "Between 1 and 2, the multiple is roughly in line with the growth expected"}; it is only as good as the forecasts behind it.`);
+      }
+      if (c.dy.pct != null && c.dy.now > 0) {
+        out.push(`The dividend yield of ${Y(c.dy.now)} is ${c.dy.pct <= 0.2 ? "near the low end" : c.dy.pct >= 0.8 ? "near the high end" : "within the usual range"} of its last ten years (median ${Y(c.dy.med)}). For yields the reading is reversed: a high yield means a low price for each dollar paid out.`);
+      } else if (!c.dy.now) out.push("No dividends paid in the last twelve months.");
+      if (c.fcf.now != null && !c.fcf.na) {
+        out.push(c.fcf.now < 0
+          ? "Free cash flow over the last twelve months was negative: the business used more cash than it generated after investment."
+          : `Free cash flow of the last twelve months is ${Y(c.fcf.now)} of the market value, the cash the business generated after investment for each $100 of shares.`);
+      }
+      document.getElementById("why-growth").replaceChildren(...out.map((t) => Object.assign(document.createElement("li"), { textContent: t })));
+    }
+
+    function quality(c, sec) {
+      const q = c.quality, sn = sec.now;
+      const qb = document.getElementById("co-quality-badge");
+      qb.replaceChildren();
+      if (q.label) qb.append(Object.assign(document.createElement("span"), { className: `badge q-${q.label}`, textContent: QUALITY[q.label] }));
+      const vs = (med, f) => (med == null ? "" : `sector median ${f(med)}`);
+      const items = c.s === "Financials"
+        ? [["Return on equity", P(q.roe), vs(sn.roe, P)], ["Return on assets", P(q.roa, 1), vs(sn.roa, (v) => P(v, 1))], ["Net margin", P(q.npm), vs(sn.npm, P)]]
+        : [["Operating margin", P(q.opm), vs(sn.opm, P)], ["Return on equity", P(q.roe), vs(sn.roe, P)], ["Net debt / EBITDA", q.nde == null ? "–" : `${num(q.nde, 1)}×`, vs(sn.nde, (v) => `${num(v, 1)}×`)]];
+      items.push(["Revenue growth", MH.spct(c.growth.revGrowth, 0), `last quarter vs a year before · ${vs(sn.revGrowth, (v) => MH.spct(v, 0))}`]);
+      document.getElementById("co-quality").replaceChildren(...items.map(([label, value, delta]) => tile({ label, value, delta })));
+      document.getElementById("quality-note").textContent = q.label
+        ? `Ranked against the ${sec.name} sector on ${c.s === "Financials" ? "return on equity, return on assets and net margin" : "operating margin, return on equity and net debt to EBITDA (less is better)"}: on average ahead of ${Math.round(q.score * 100)}% of its peers. Return on equity is inflated for companies that have bought back so many shares that their equity is small or negative.`
+        : "Not enough figures to rank it against its sector.";
+    }
+
     // ---------- alerts table ----------
     const sel = document.getElementById("sector");
     sel.append(new Option("All sectors", ""));
@@ -237,7 +293,36 @@
       t: (c) => c.t, s: (c) => c.s, mcap: (c) => c.mcap, score: (c) => c.score,
       pe: (c) => c.pe.now, pePct: (c) => c.pe.pct, peSec: (c) => c.pe.sector,
       ev: (c) => c.ev.now, evPct: (c) => c.ev.pct, evSec: (c) => c.ev.sector,
+      fwd: (c) => c.growth.fwdPe, peg: (c) => c.growth.peg, epsG: (c) => c.growth.epsGrowth, revG: (c) => c.growth.revGrowth,
+      dy: (c) => c.dy.now, dyPct: (c) => c.dy.pct, fcf: (c) => c.fcf.now, fcfPct: (c) => c.fcf.pct,
+      q: (c) => c.quality.score, opm: (c) => c.quality.opm, npm: (c) => c.quality.npm, roe: (c) => c.quality.roe,
+      roa: (c) => c.quality.roa, nde: (c) => c.quality.nde,
     };
+    const td = (text, cls) => Object.assign(document.createElement("td"), { textContent: text, className: cls || "" });
+    const VIEWS = {
+      valuation: [
+        ["pe", "P/E", (c) => td(c.pe.now == null ? "n/m" : X(c.pe.now))], ["pePct", "vs own history", (c) => pbar(c.pe.pct)],
+        ["peSec", "vs sector", (c) => ratio(c.pe.sector)],
+        ["ev", "EV/EBITDA", (c) => td(c.ev.na ? "n/a" : c.ev.now == null ? "n/m" : X(c.ev.now))], ["evPct", "vs own history", (c) => pbar(c.ev.pct)],
+        ["evSec", "vs sector", (c) => ratio(c.ev.sector)],
+      ],
+      growth: [
+        ["fwd", "Forward P/E", (c) => td(X(c.growth.fwdPe))], ["peg", "PEG", (c) => td(c.growth.peg == null ? "–" : num(c.growth.peg, 2))],
+        ["epsG", "Expected EPS growth", (c) => td(MH.spct(c.growth.epsGrowth, 0), MH.signClass(c.growth.epsGrowth))],
+        ["revG", "Revenue growth", (c) => td(MH.spct(c.growth.revGrowth, 0), MH.signClass(c.growth.revGrowth))],
+        ["dy", "Dividend yield", (c) => td(Y(c.dy.now))], ["dyPct", "vs own history", (c) => pbar(c.dy.pct, true)],
+        ["fcf", "FCF yield", (c) => td(c.fcf.na ? "n/a" : Y(c.fcf.now), c.fcf.now < 0 ? "neg" : "")], ["fcfPct", "vs own history", (c) => pbar(c.fcf.pct, true)],
+      ],
+      quality: [
+        ["q", "Quality", (c) => { const x = td(""); x.style.textAlign = "left"; if (c.quality.label) x.append(Object.assign(document.createElement("span"), { className: `badge q-${c.quality.label}`, textContent: QUALITY[c.quality.label].replace(" quality", "") })); else x.textContent = "–"; return x; }],
+        ["opm", "Operating margin", (c) => td(P(c.quality.opm))], ["npm", "Net margin", (c) => td(P(c.quality.npm))],
+        ["roe", "Return on equity", (c) => td(P(c.quality.roe))], ["roa", "Return on assets", (c) => td(P(c.quality.roa, 1))],
+        ["nde", "Net debt / EBITDA", (c) => td(c.quality.nde == null ? "–" : `${num(c.quality.nde, 1)}×`)],
+        ["revG", "Revenue growth", (c) => td(MH.spct(c.growth.revGrowth, 0), MH.signClass(c.growth.revGrowth))],
+      ],
+    };
+    let view = "valuation";
+    MH.seg(document.getElementById("view-tabs"), [["valuation", "Valuation"], ["growth", "Growth & yield"], ["quality", "Quality"]], view, (v) => { view = v; renderTable(); });
     function signalFilter() {
       const pool = V.companies.filter((c) => !sel.value || c.s === sel.value);
       const n = (k) => pool.filter((c) => sigKey(c) === k).length;
@@ -248,7 +333,8 @@
     }
     sel.addEventListener("change", () => { signalFilter(); renderTable(); });
 
-    function pbar(p) {
+    // rev: for yields, where a high value is the cheap end
+    function pbar(p, rev) {
       const td = document.createElement("td");
       if (p == null) { td.textContent = "–"; td.className = "muted"; return td; }
       const w = document.createElement("span");
@@ -256,7 +342,7 @@
       const b = document.createElement("b");
       b.textContent = ord(p);
       const tr = document.createElement("span");
-      tr.className = "track";
+      tr.className = rev ? "track rev" : "track";
       const i = document.createElement("i");
       i.style.left = `${p * 100}%`;
       tr.append(i);
@@ -280,6 +366,19 @@
         if (y == null) return -1;
         return (typeof x === "string" ? x.localeCompare(y) : x - y) * (state.dir < 0 ? -1 : 1) * (typeof x === "string" ? -1 : 1);
       });
+      const head = document.querySelector("#screen-table thead tr");
+      head.replaceChildren();
+      const th = (key, label, cls, left) => {
+        const h = Object.assign(document.createElement("th"), { textContent: label, className: cls || "" });
+        h.dataset.sort = key;
+        if (left) h.style.textAlign = "left";
+        head.append(h);
+      };
+      th("t", "Company");
+      th("score", "Signal", "", true);
+      th("s", "Sector", "hide-sm", true);
+      th("mcap", "Market cap", "hide-sm");
+      VIEWS[view].forEach(([key, label]) => th(key, label, "", key === "q"));
       const tb = document.querySelector("#screen-table tbody");
       tb.replaceChildren(...rows.map((c) => {
         const tr = document.createElement("tr");
@@ -288,15 +387,12 @@
         const name = document.createElement("td");
         name.className = "name-cell";
         name.append(c.t, Object.assign(document.createElement("small"), { textContent: c.n }));
-        const td = (text, cls) => Object.assign(document.createElement("td"), { textContent: text, className: cls || "" });
         const sig = document.createElement("td");
         sig.append(badge(c));
         sig.style.textAlign = "left";
         const sector = td(c.s, "hide-sm");
         sector.style.textAlign = "left";
-        tr.append(name, sig, sector, td(c.mcap ? `$${num(c.mcap, 0)}B` : "–", "hide-sm"),
-          td(c.pe.now == null ? "n/m" : X(c.pe.now)), pbar(c.pe.pct), ratio(c.pe.sector),
-          td(c.ev.na ? "n/a" : c.ev.now == null ? "n/m" : X(c.ev.now)), pbar(c.ev.pct), ratio(c.ev.sector));
+        tr.append(name, sig, sector, td(c.mcap ? `$${num(c.mcap, 0)}B` : "–", "hide-sm"), ...VIEWS[view].map(([, , cell]) => cell(c)));
         tr.addEventListener("click", () => show(c.t, true));
         return tr;
       }));
@@ -312,7 +408,6 @@
     const stb = document.querySelector("#sector-table tbody");
     V.sectors.forEach((s) => {
       const tr = document.createElement("tr");
-      const td = (text, cls) => Object.assign(document.createElement("td"), { textContent: text, className: cls || "" });
       const name = document.createElement("td");
       if (s.name === "S&P 500") name.innerHTML = "<strong>All S&amp;P 500</strong>";
       else {
@@ -330,7 +425,8 @@
       }
       tr.append(name, td(String(s.count)), td(X(s.pe.now)), td(X(s.pe.med)), pbar(s.pe.pct),
         td(s.ev.now == null ? "n/a" : X(s.ev.now)), td(X(s.ev.med)), pbar(s.ev.pct),
-        td(String(s.signals.under), "pos"), td(String(s.signals.over), "neg"));
+        td(String(s.signals.under), "pos"), td(String(s.signals.over), "neg"),
+        td(X(s.now.fwdPe)), td(Y(s.dy.now)), td(s.fcf.now == null ? "n/a" : Y(s.fcf.now)), td(P(s.now.opm)));
       stb.append(tr);
     });
 
@@ -369,6 +465,8 @@
       <p><strong>P/E</strong> is the price divided by earnings per share of the last four reported quarters. A quarter counts from the day it was reported, so the history only uses figures that were public at the time. The earnings are those Yahoo Finance compares with analysts' estimates, which for many companies leave out one-off items.</p>
       <p><strong>EV/EBITDA</strong> is enterprise value (market value plus debt minus cash and short-term investments) divided by EBITDA of the last twelve months, normalized for unusual items when available. It compares companies with different amounts of debt. Yahoo Finance only publishes about four years of these statements, so its history starts in 2022. It is not used for banks, insurers and other financial companies.</p>
       <p><strong>The signal</strong> comes from up to four votes. Against its own history, a multiple in the company's cheapest ${Math.round(R.lowPct * 100)}% of months votes cheap and one in its most expensive ${Math.round((1 - R.highPct) * 100)}% votes expensive. Against its sector, a multiple below ${num(R.cheapRatio, 2)}× the sector median votes cheap and one above ${num(R.dearRatio, 2)}× votes expensive. The average of the votes, from −1 to +1, is the score: ${num(R.under, 1)} or less is undervalued, +${num(R.over, 1)} or more is overvalued, anything between is fairly valued. Negative earnings, or less than three years of P/E history, give no vote.</p>
+      <p><strong>Growth and yield</strong> sit outside the signal. Forward P/E divides the price by analysts' EPS estimate for the next twelve months, and PEG divides the P/E by the expected yearly EPS growth over five years (both from Yahoo Finance). Dividend yield is the dividends paid in the last twelve months over the price, back to 2005; free cash flow yield is the free cash flow of the last twelve months over the market value, from 2022. For yields the reading is reversed: higher means cheaper.</p>
+      <p><strong>Quality</strong> ranks each company against its sector on operating margin, return on equity and net debt to EBITDA (for financial companies: return on equity, return on assets and net margin). The average of the three ranks puts it in the top third (high), middle third (average) or bottom third (low). Margins and returns are those of the last twelve months, from Yahoo Finance.</p>
       <p><strong>What it leaves out.</strong> A low multiple can be deserved: earnings may be about to fall, as in cyclical companies at the top of their cycle, and a high multiple can be justified by fast growth, which these ratios ignore. A company whose business has changed is compared with a past that no longer applies. Sector medians use today's members of the index. Use the signal as a starting point for research.</p>
       <p class="muted">For research and education. Nothing on this page is investment advice.</p>`;
 

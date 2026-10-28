@@ -7,10 +7,14 @@
 Files
   companies.csv         ticker, Yahoo symbol, name, GICS sector and sub-industry (Wikipedia's
                         list of S&P 500 companies, plus EXTRA_STOCKS from universe.py)
-  prices.csv            month-end close of every company, split-adjusted, since 2005
+  prices.csv            month-end close of every company, split-adjusted, since 1999
+  dividends.csv         dividends paid in each month (split-adjusted)
   latest.csv            latest daily close and its date
   eps/<TICKER>.csv      earnings per share of every quarterly report (Yahoo's earnings history)
-  statements/<T>.csv    annual and quarterly EBITDA, debt, cash and shares (Yahoo's statements)
+  statements/<T>.csv    annual and quarterly EBITDA, free cash flow, debt, cash and shares
+                        (Yahoo's statements)
+  info/<TICKER>.json    current snapshot from Yahoo's quote summary: forward EPS, PEG ratio,
+                        margins, returns on equity and assets, debt, cash, EBITDA and growth
   fetched.json          when each company's fundamentals were last downloaded
 
 Fundamentals change four times a year, so a normal run only refreshes a company when its
@@ -36,13 +40,18 @@ ROOT = Path(__file__).resolve().parent.parent
 RAW = ROOT / "data" / "raw" / "valuation"
 WIKI = "https://en.wikipedia.org/w/index.php?title=List_of_S%26P_500_companies&action=raw"
 UA = "market-history/1.0 (https://github.com/angelmza1990/market-history)"
-PRICE_START = "2005-01-01"
+PRICE_START = "1999-01-01"
 MAX_REFRESH = 200
+# Index funds whose prices and dividends are kept too: the portfolio page's benchmarks.
+BENCHMARK_ETFS = ["SPY", "QQQ", "DIA", "IWM", "EEM", "AGG"]
 STALE_DAYS = 7
 
 # Yahoo's fundamentals timeseries: each item is fetched for both annual and quarterly periods.
 ITEMS = ["NormalizedEBITDA", "EBITDA", "TotalDebt", "CashCashEquivalentsAndShortTermInvestments",
-         "CashAndCashEquivalents", "OrdinarySharesNumber", "DilutedAverageShares"]
+         "CashAndCashEquivalents", "OrdinarySharesNumber", "DilutedAverageShares", "FreeCashFlow"]
+INFO_KEYS = ["forwardEps", "trailingPegRatio", "pegRatio", "operatingMargins", "profitMargins",
+             "grossMargins", "returnOnEquity", "returnOnAssets", "totalDebt", "totalCash", "ebitda",
+             "freeCashflow", "revenueGrowth", "earningsGrowth", "payoutRatio"]
 TIMESERIES = "https://query2.finance.yahoo.com/ws/fundamentals-timeseries/v1/finance/timeseries/{}"
 
 
@@ -87,19 +96,24 @@ def read_companies():
 
 
 def fetch_prices(companies):
-    """Month-end closes since 2005 and the latest daily close, for every company at once."""
+    """Month-end closes since 1999, monthly dividends and the latest daily close, for every company at once."""
     symbols = [c[1] for c in companies]
-    monthly = yf.download(symbols, start=PRICE_START, interval="1mo", auto_adjust=False,
-                          progress=False, threads=True)["Close"]
+    raw = yf.download(symbols, start=PRICE_START, interval="1mo", auto_adjust=False, actions=True,
+                      progress=False, threads=True)
+    monthly, dividends = raw["Close"], raw["Dividends"]
     daily = yf.download(symbols, period="10d", interval="1d", auto_adjust=False,
                         progress=False, threads=True)["Close"]
-    rows, latest, missing = [], [], []
+    rows, divs, latest, missing = [], [], [], []
     for ticker, symbol, *_ in companies:
         if symbol not in monthly or monthly[symbol].dropna().empty:
             missing.append(ticker)
             continue
         for ts, v in monthly[symbol].dropna().items():
             rows.append([ticker, ts.strftime("%Y-%m"), f"{v:.6g}"])
+        if symbol in dividends:
+            for ts, v in dividends[symbol].items():
+                if v == v and v > 0:
+                    divs.append([ticker, ts.strftime("%Y-%m"), f"{v:.6g}"])
         last = daily[symbol].dropna() if symbol in daily else None
         if last is not None and not last.empty:
             latest.append([ticker, last.index[-1].strftime("%Y-%m-%d"), f"{last.iloc[-1]:.6g}"])
@@ -107,6 +121,8 @@ def fetch_prices(companies):
     latest.sort()
     ok = save(RAW / "prices.csv", ["ticker", "month", "close"], rows)
     ok = save(RAW / "latest.csv", ["ticker", "date", "close"], latest) and ok
+    divs.sort()
+    ok = save(RAW / "dividends.csv", ["ticker", "month", "dividend"], divs) and ok
     return ok, missing
 
 
@@ -140,6 +156,11 @@ def fetch_statements(symbol, session):
             if x and x.get("reportedValue"):
                 rows.append([x["asOfDate"], period, item, f"{x['reportedValue']['raw']:.6g}"])
     return sorted(rows)
+
+
+def fetch_info(symbol):
+    info = yf.Ticker(symbol).info or {}
+    return {k: info[k] for k in INFO_KEYS if isinstance(info.get(k), (int, float))}
 
 
 def write_rows(path, header, rows):
@@ -188,6 +209,7 @@ def fetch_fundamentals(companies, wanted, refresh_all):
             try:
                 eps = fetch_eps(symbol)
                 statements = fetch_statements(symbol, session)
+                info = fetch_info(symbol)
                 break
             except Exception as e:  # rate limits, network errors, odd payloads
                 print(f"  retry {ticker}: {type(e).__name__}: {e}"[:160])
@@ -206,6 +228,9 @@ def fetch_fundamentals(companies, wanted, refresh_all):
             write_rows(RAW / "eps" / f"{ticker}.csv", ["date", "eps"], eps)
         if statements:
             write_rows(RAW / "statements" / f"{ticker}.csv", ["date", "period", "item", "value"], statements)
+        if info:
+            (RAW / "info").mkdir(exist_ok=True)
+            (RAW / "info" / f"{ticker}.json").write_text(json.dumps(info, indent=0, sort_keys=True))
         if eps or statements:
             fetched[ticker] = today.isoformat()
         else:
@@ -230,7 +255,7 @@ def main():
         companies = read_companies()
 
     print("Prices")
-    ok, missing = fetch_prices(companies)
+    ok, missing = fetch_prices(companies + [[t, t] for t in BENCHMARK_ETFS])
     if missing:
         print(f"  ! no prices for {', '.join(missing)}")
 

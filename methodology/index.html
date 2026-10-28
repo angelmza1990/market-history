@@ -67,6 +67,9 @@
             <li><strong>Own history</strong>: today's value is ranked among the monthly values of the last 120 months (at least 36 for P/E, 24 for EV/EBITDA). The usual range is the 20th to the 80th percentile.</li>
             <li><strong>Sector</strong>: today's value divided by the median of the companies in the same sector with a meaningful value. Sector medians over time use the current members of the index, so companies that left it are missing from the past.</li>
             <li><strong>Signal</strong>: each comparison votes −1 (in the cheapest 20% of its history, or below 0.8× the sector median), +1 (in the most expensive 20%, or above 1.25×) or 0. The average of the votes is the score: −0.5 or below is undervalued, +0.5 or above overvalued, anything between fairly valued.</li>
+            <li><strong>Forward P/E</strong> = latest close ÷ analysts' EPS estimate for the next twelve months; <strong>PEG</strong> = P/E ÷ expected yearly EPS growth over five years, as published by Yahoo Finance. Neither enters the signal.</li>
+            <li><strong>Dividend yield</strong> = dividends paid in the last twelve months ÷ month-end close, since 2005. <strong>Free cash flow yield</strong> = free cash flow of the last twelve months ÷ market value, since 2022, not computed for Financials. For yields a high value is the cheap end.</li>
+            <li><strong>Quality</strong>: each company is ranked within its sector on operating margin, return on equity and net debt ÷ EBITDA (lower is better); Financials on return on equity, return on assets and net margin. The average rank puts it in the top (high), middle (average) or bottom third (low). Figures are Yahoo Finance's for the last twelve months.</li>
             <li>Prices are refreshed every weekday. Earnings and statements are refreshed when a company reports, or at least once a week.</li>
           </ul>
           <p>Multiples ignore growth, the quality of earnings and where a company is in its cycle, so the signal describes price relative to the past and to peers, not what a business is worth.</p>
@@ -84,7 +87,8 @@
           <h2>Portfolio check</h2>
           <ul>
             <li>Weights are scaled to add up to 100%. Repeated tickers are merged.</li>
-            <li>Past behavior assumes the weights are restored at the end of every month, uses month-end prices (stock dividends, trading costs and taxes left out; funds include dividends) and is compared with the S&amp;P 500 price index. It starts when the youngest holding has prices.</li>
+            <li>Past behavior assumes the weights are restored at the end of every month and uses month-end total returns, with dividends reinvested (gold and crypto are prices); trading costs and taxes are left out. It is compared with a chosen benchmark fund, also with dividends: SPY (S&amp;P 500), QQQ (Nasdaq-100), DIA (Dow Jones), IWM (Russell 2000), EEM (emerging markets), or 60% SPY and 40% AGG (US bonds) rebalanced monthly. It starts when the youngest holding and the benchmark both have prices.</li>
+            <li><strong>Past crises</strong>: the change from the month-end before each fall to the month-end at its low. A holding that was not trading yet is estimated as its beta against the S&amp;P 500 (from all its monthly history, 1 if under two years) times the S&amp;P 500's change.</li>
             <li>Weighted P/E and EV/EBITDA are harmonic averages over the individual stocks with positive earnings or EBITDA: total weight divided by the sum of weight ÷ multiple. The S&amp;P 500 figure weights companies by market value the same way.</li>
             <li>Sector weights spread SPY across the index's sectors by market value; sector funds count toward their sector.</li>
             <li>Beta and correlation use monthly returns against the S&amp;P 500; volatility is the standard deviation of monthly returns × √12.</li>

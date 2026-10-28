@@ -31,6 +31,11 @@
       position: relative; width: 44px; height: 8px; border-radius: 4px; display: inline-block;
       background: linear-gradient(90deg, var(--pos-1) 0 20%, var(--line) 20% 80%, var(--neg-1) 80% 100%);
     }
+    .pbar .track.rev { background: linear-gradient(90deg, var(--neg-1) 0 20%, var(--line) 20% 80%, var(--pos-1) 80% 100%); }
+    .group-title { margin: 28px 0 10px; padding-top: 18px; border-top: 1px solid var(--line); display: flex; gap: 10px; align-items: center; }
+    .badge.q-high { background: var(--pos-1); color: var(--pos-ink); }
+    .badge.q-average { background: var(--hover); color: var(--ink-2); border-color: var(--line-2); }
+    .badge.q-low { background: var(--neg-1); color: var(--neg-ink); }
     .pbar .track i { position: absolute; top: -2px; width: 3px; height: 12px; margin-left: -1.5px; border-radius: 1px; background: var(--ink); }
     .pbar b { font-weight: 500; min-width: 30px; text-align: right; }
     table.data tbody tr.pick { cursor: pointer; }
@@ -87,31 +92,39 @@
           </div>
           <div id="co-legend"></div>
           <ul class="why" id="why"></ul>
+
+          <h3 class="group-title">Growth and yield</h3>
+          <div class="tiles compact" id="co-growth"></div>
+          <div class="grid-2">
+            <div>
+              <div class="chart-head"><h3>Dividend yield over time</h3><span class="count-note" id="dy-note"></span></div>
+              <div class="chart" id="dy-chart"></div>
+            </div>
+            <div>
+              <div class="chart-head"><h3>Free cash flow yield over time</h3><span class="count-note" id="fcf-note"></span></div>
+              <div class="chart" id="fcf-chart"></div>
+            </div>
+          </div>
+          <ul class="why" id="why-growth"></ul>
+
+          <h3 class="group-title">Quality <span id="co-quality-badge"></span></h3>
+          <div class="tiles compact" id="co-quality"></div>
+          <p class="note" id="quality-note"></p>
         </div>
       </section>
 
       <section class="block" id="screen">
         <h2>Alerts by sector</h2>
-        <p class="sub">Every company with its signal. Choose a sector to compare a company with its peers, or a signal to see only the stocks that look undervalued or overvalued. Percentiles show where today's multiple sits in the company's own history: the blue end is its cheapest 20% of months, the red end its most expensive 20%. Click a row to open it above.</p>
+        <p class="sub">Every company with its signal. Choose a sector to compare a company with its peers, or a signal to see only the stocks that look undervalued or overvalued, and switch between valuation, growth and yield, and quality figures. Percentiles show where today's figure sits in the company's own history: the blue end is its cheapest 20% of months (lowest multiples, highest yields), the red end its most expensive 20%. Click a row to open it above.</p>
         <div class="controls">
+          <div id="view-tabs"></div>
           <label class="control">Sector <select id="sector"></select></label>
           <div id="signal-filter"></div>
           <span class="count-note" id="screen-count"></span>
         </div>
         <div class="card table-scroll tall">
           <table class="data" id="screen-table">
-            <thead><tr>
-              <th data-sort="t">Company</th>
-              <th data-sort="score" style="text-align:left">Signal</th>
-              <th data-sort="s" class="hide-sm" style="text-align:left">Sector</th>
-              <th data-sort="mcap" class="hide-sm">Market cap</th>
-              <th data-sort="pe">P/E</th>
-              <th data-sort="pePct">vs own history</th>
-              <th data-sort="peSec">vs sector</th>
-              <th data-sort="ev">EV/EBITDA</th>
-              <th data-sort="evPct">vs own history</th>
-              <th data-sort="evSec">vs sector</th>
-            </tr></thead>
+            <thead><tr></tr></thead>
             <tbody></tbody>
           </table>
         </div>
@@ -127,6 +140,7 @@
               <th>Median P/E</th><th>10-year median</th><th>vs history</th>
               <th>Median EV/EBITDA</th><th>Since 2022</th><th>vs history</th>
               <th>Undervalued</th><th>Overvalued</th>
+              <th>Forward P/E</th><th>Dividend yield</th><th>FCF yield</th><th>Operating margin</th>
             </tr></thead>
             <tbody></tbody>
           </table>

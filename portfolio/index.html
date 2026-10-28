@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Portfolio check · Market History</title>
-  <meta name="description" content="An educational tool that describes a hypothetical portfolio: concentration, sectors, valuation multiples and historical risk against the S&P 500. Not investment advice.">
+  <meta name="description" content="An educational tool that describes a hypothetical portfolio: concentration, sectors, valuation, quality, past risk against a benchmark and behavior in past crises. Not investment advice.">
   <meta name="robots" content="noindex">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%231f3a5f'/%3E%3Cpath d='M12 44l12-12 9 7 19-21' fill='none' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="../assets/theme.css">
@@ -52,6 +52,9 @@
     .badge.over { background: var(--neg-1); color: var(--neg-ink); }
     .badge.fair { background: var(--hover); color: var(--ink-2); border-color: var(--line-2); }
     .badge.none { color: var(--muted); border-color: var(--line); }
+    .badge.q-high { background: var(--pos-1); color: var(--pos-ink); }
+    .badge.q-average { background: var(--hover); color: var(--ink-2); border-color: var(--line-2); }
+    .badge.q-low { background: var(--neg-1); color: var(--neg-ink); }
     table.heat.corr td { min-width: 46px; }
     .corr-pos { background: var(--neg-1); }
     [hidden] { display: none !important; }
@@ -74,7 +77,7 @@
             <li>This tool is for information and education only. Nothing on it is investment, financial, tax or legal advice, or a recommendation or offer to buy or sell any security.</li>
             <li>It does not know your goals, time horizon, income, taxes or tolerance for risk, so it cannot say whether a portfolio is suitable for you. Speak to a licensed financial adviser before making investment decisions.</li>
             <li>The figures come from public sources (Yahoo Finance, Wikipedia) processed automatically. They can be incomplete, delayed or wrong, and are provided as they are, without any warranty.</li>
-            <li>Past performance does not predict future results. A hypothetical portfolio rebalanced every month ignores costs, taxes and dividends from stocks.</li>
+            <li>Past performance does not predict future results. A hypothetical portfolio rebalanced every month ignores trading costs and taxes, and past crises say little about the next one.</li>
             <li>Your portfolio stays in this browser. It is not sent or stored anywhere else.</li>
           </ul>
           <label><input type="checkbox" id="ack-box"> I understand that this is not investment advice and that I am responsible for my own decisions.</label>
@@ -85,7 +88,7 @@
       <div id="tool" hidden>
         <section class="block">
           <h2>Your portfolio</h2>
-          <p class="sub">Any S&amp;P 500 company, plus the funds and assets tracked on this site: SPY, the sector funds (XLK, XLF, …), TLT, IEF, LQD, EEM, ARGT, gold (GOLD), Bitcoin (BTC) and Ethereum (ETH). Weights are percentages of the portfolio; if they don't add up to 100 they are scaled to do so.</p>
+          <p class="sub">Any S&amp;P 500 company, plus index funds (SPY, QQQ, DIA, IWM, EEM, AGG), the sector funds (XLK, XLF, …), TLT, IEF, LQD, ARGT, gold (GOLD), Bitcoin (BTC) and Ethereum (ETH). Weights are percentages of the portfolio; if they don't add up to 100 they are scaled to do so.</p>
           <div class="card">
             <table class="holdings"><tbody id="rows"></tbody></table>
             <datalist id="tickers"></datalist>
@@ -109,6 +112,7 @@
           <section class="block">
             <h2>Summary</h2>
             <p class="sub" id="summary-sub"></p>
+            <div class="controls"><label class="control">Compare with <select id="bench"></select></label></div>
             <div class="tiles" id="tiles"></div>
           </section>
 
@@ -120,11 +124,11 @@
 
           <section class="block">
             <h2>Holdings</h2>
-            <p class="sub">Returns are annualized price returns (dividends of individual stocks not included; funds include them). Volatility is the annualized standard deviation of monthly returns over the last five years.</p>
+            <p class="sub">Returns include reinvested dividends (gold and crypto are prices). Volatility is the annualized standard deviation of monthly returns over the last five years. Quality ranks each company within its sector.</p>
             <div class="card table-scroll">
               <table class="data" id="holdings-table">
                 <thead><tr>
-                  <th>Holding</th><th>Weight</th><th style="text-align:left">Sector</th><th>P/E</th><th>EV/EBITDA</th><th style="text-align:left">Valuation signal</th>
+                  <th>Holding</th><th>Weight</th><th style="text-align:left">Sector</th><th>P/E</th><th>Forward P/E</th><th>Dividend yield</th><th style="text-align:left">Valuation signal</th><th style="text-align:left">Quality</th>
                   <th>1 yr</th><th>5 yr</th><th>Volatility</th>
                 </tr></thead>
                 <tbody></tbody>
@@ -169,6 +173,14 @@
             <div class="card">
               <h3>Calendar years</h3>
               <div class="table-scroll"><table class="data" id="years-table"></table></div>
+            </div>
+          </section>
+
+          <section class="block">
+            <h2>In past market crises</h2>
+            <p class="sub">What this mix would have done in each major fall since 2000, from month-end to month-end, with dividends reinvested. For holdings that were not trading yet the change is estimated from their beta: their typical move relative to the S&amp;P 500 (marked *). The next crisis will not look like any of these.</p>
+            <div class="card table-scroll">
+              <table class="data" id="scenarios"><thead><tr></tr></thead><tbody></tbody></table>
             </div>
           </section>
 
