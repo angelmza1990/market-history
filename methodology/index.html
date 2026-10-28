@@ -81,7 +81,25 @@
 
           <h2>Reproduce it</h2>
           <p>The code is on <a href="https://github.com/angelmza1990/market-history">GitHub</a>. <code>scripts/fetch_data.py</code> downloads the sources and <code>scripts/build_data.py</code> builds the datasets the pages read. The build checks the S&amp;P 500 against known calendar-year returns and stops if they do not match.</p>
-          <p class="muted">For research and education. Nothing on this site is investment advice.</p>
+          <h2>Portfolio check</h2>
+          <ul>
+            <li>Weights are scaled to add up to 100%. Repeated tickers are merged.</li>
+            <li>Past behavior assumes the weights are restored at the end of every month, uses month-end prices (stock dividends, trading costs and taxes left out; funds include dividends) and is compared with the S&amp;P 500 price index. It starts when the youngest holding has prices.</li>
+            <li>Weighted P/E and EV/EBITDA are harmonic averages over the individual stocks with positive earnings or EBITDA: total weight divided by the sum of weight ÷ multiple. The S&amp;P 500 figure weights companies by market value the same way.</li>
+            <li>Sector weights spread SPY across the index's sectors by market value; sector funds count toward their sector.</li>
+            <li>Beta and correlation use monthly returns against the S&amp;P 500; volatility is the standard deviation of monthly returns × √12.</li>
+          </ul>
+
+          <h2 id="disclaimer">Disclaimer</h2>
+          <ul>
+            <li>This project is for information and education only. It is <strong>not investment, financial, tax or legal advice</strong>, and nothing in it is a recommendation, solicitation or offer to buy, sell or hold any security.</li>
+            <li>It does <strong>not replace advice from a licensed financial adviser</strong> who knows your goals, time horizon, finances and tolerance for risk. Talk to one before making investment decisions.</li>
+            <li>Labels such as "undervalued" and "overvalued" are mechanical comparisons of valuation multiples with a company's own history and its sector. They ignore growth, risk and much else, and are not ratings or price targets.</li>
+            <li>The portfolio check describes a hypothetical portfolio; it does not judge whether it suits anyone.</li>
+            <li>Data comes from third parties (Yahoo Finance, FRED, Wikipedia), is processed automatically and may be incomplete, delayed or wrong. It is provided as is, without warranty of any kind.</li>
+            <li>Past performance does not guarantee future results. Every investment can lose value.</li>
+            <li>The author accepts no liability for any loss or decision arising from the use of this site or its code.</li>
+          </ul>
         </div>
       </section>
     </div>

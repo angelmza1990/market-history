@@ -1,4 +1,4 @@
-"""Build data/valuation.json from the snapshot in data/raw/valuation/.
+"""Build data/valuation.json and data/stocks.json from the snapshot in data/raw/valuation/.
 
     python3 scripts/build_valuation.py
 
@@ -36,6 +36,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 RAW = ROOT / "data" / "raw" / "valuation"
 OUT = ROOT / "data" / "valuation.json"
+STOCKS = ROOT / "data" / "stocks.json"
 
 START = "2005-01"
 HISTORY_MONTHS = 120
@@ -355,6 +356,21 @@ def main():
     OUT.write_text(json.dumps(data, separators=(",", ":")))
     rated = sum(c["signal"] is not None for c in built)
     print(f"valuation.json: {OUT.stat().st_size / 1024:.0f} KB, {len(built)} companies, {rated} rated")
+    write_stock_prices(built, prices, latest, months)
+
+
+def write_stock_prices(built, prices, latest, months):
+    """data/stocks.json: month-end closes of every company (split-adjusted, no dividends),
+    the current month at the latest close. Read by the portfolio page."""
+    series = {}
+    for c in built:
+        px = dict(prices[c["t"]])
+        px[months[-1]] = latest[c["t"]][1]
+        vals = [px.get(m) for m in months]
+        first = next(i for i, v in enumerate(vals) if v is not None)
+        series[c["t"]] = {"from": months[first], "v": [float(f"{v:.5g}") if v else None for v in vals[first:]]}
+    STOCKS.write_text(json.dumps({"updated": max(d for d, _ in latest.values()).isoformat(), "prices": series}, separators=(",", ":")))
+    print(f"stocks.json: {STOCKS.stat().st_size / 1024:.0f} KB")
 
 
 def check(built, sectors):

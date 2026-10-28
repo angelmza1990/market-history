@@ -1,5 +1,7 @@
 # Market History
 
+> **Not investment advice.** An educational project; it does not replace a licensed financial adviser. See the [disclaimer](#disclaimer).
+
 A long-run view of markets and the economy: calendar-year returns, growth, drawdowns and correlations for major stock indices, bonds, commodities, crypto and the eleven US sectors, set against US inflation, interest rates, unemployment, growth and recessions; and the valuation of every S&P 500 company against its own history and its sector.
 
 **Live site:** https://angelmza1990.github.io/market-history/
@@ -11,6 +13,7 @@ A long-run view of markets and the economy: calendar-year returns, growth, drawd
 - **[Long run](https://angelmza1990.github.io/market-history/long-run/)**: growth of 100 from any start year since 1928, on a log or linear scale, with US recessions and major market events, drawdowns from the all-time high, and statistics for the chosen window.
 - **[Sectors](https://angelmza1990.github.io/market-history/sectors/)**: sector leadership by year, performance with volatility, beta and correlation, returns against the S&P 500 year by year, one panel per sector, and a correlation matrix with bonds, gold, oil and Bitcoin.
 - **[Valuation](https://angelmza1990.github.io/market-history/valuation/)**: trailing P/E and EV/EBITDA for every S&P 500 company, month by month, against the company's own last ten years and the median of its sector; a signal (undervalued, fairly valued, overvalued) built from those comparisons; a searchable company view, an alerts table filterable by sector and signal, and sector medians over time.
+- **[Portfolio check](https://angelmza1990.github.io/market-history/portfolio/)**: an educational tool, behind a disclaimer, that describes a hypothetical portfolio entered as tickers and weights: concentration, sectors against the S&P 500, weighted valuation multiples, the same mix's past returns, volatility, drawdowns and beta, and how the holdings move together. The holdings stay in the browser.
 - **[Economy](https://angelmza1990.github.io/market-history/macro/)**: inflation, interest rates, the yield curve, unemployment, GDP growth, money supply, volatility and market stress; S&P 500 returns grouped by recession, inflation, Fed policy and the shape of the yield curve; decade-by-decade returns against inflation; and a year-by-year table.
 - **[Methodology](https://angelmza1990.github.io/market-history/methodology/)**: sources, definitions and limitations.
 
@@ -65,7 +68,13 @@ Then open http://localhost:8080.
 
 ## Disclaimer
 
-For research and education. Nothing here is investment advice.
+- This project is for information and education only. It is **not investment, financial, tax or legal advice**, and nothing in it is a recommendation, solicitation or offer to buy, sell or hold any security.
+- It does **not replace advice from a licensed financial adviser** who knows your goals, time horizon, finances and tolerance for risk. Talk to one before making investment decisions.
+- Labels such as "undervalued" and "overvalued" are mechanical comparisons of valuation multiples with a company's own history and its sector. They ignore growth, risk and much else, and are not ratings or price targets.
+- The portfolio check describes a hypothetical portfolio; it does not judge whether it suits anyone.
+- Data comes from third parties (Yahoo Finance, FRED, Wikipedia), is processed automatically and may be incomplete, delayed or wrong. It is provided as is, without warranty of any kind.
+- Past performance does not guarantee future results. Every investment can lose value.
+- The author accepts no liability for any loss or decision arising from the use of this site or its code.
 
 ## License
 

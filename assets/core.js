@@ -8,6 +8,7 @@
     { id: "longrun", href: "long-run/", label: "Long run" },
     { id: "sectors", href: "sectors/", label: "Sectors" },
     { id: "valuation", href: "valuation/", label: "Valuation" },
+    { id: "portfolio", href: "portfolio/", label: "Portfolio check" },
     { id: "macro", href: "macro/", label: "Economy" },
     { id: "method", href: "methodology/", label: "Methodology" },
   ];
@@ -57,8 +58,8 @@
     footer.innerHTML = `
       <div class="wrap">
         <p>Data: Yahoo Finance (prices and company fundamentals), FRED, Federal Reserve Bank of St. Louis (economic series), and Wikipedia (S&amp;P 500 constituents).
-        Index returns exclude dividends unless marked as total return. For research and education; not investment advice.
-        <a href="${ROOT}/methodology/">Methodology</a>.</p>
+        Index returns exclude dividends unless marked as total return. <a href="${ROOT}/methodology/">Methodology</a>.</p>
+        <p class="disclaimer"><strong>Not investment advice.</strong> This site is an educational project. Nothing on it is a recommendation to buy, sell or hold any security, and it does not replace advice from a licensed financial adviser. Data may be incomplete, delayed or wrong and is provided without warranty. Past performance does not guarantee future results. <a href="${ROOT}/methodology/#disclaimer">Full disclaimer</a>.</p>
         <p>Built by <a href="https://angelmza1990.github.io">Angel Villanueva</a> ·
         <a href="https://github.com/angelmza1990/market-history">Source on GitHub</a></p>
       </div>`;

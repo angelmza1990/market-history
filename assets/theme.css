@@ -246,6 +246,12 @@ table.heat tfoot th { position: sticky; left: 0; background: var(--surface); tex
 .footer { margin-top: 48px; border-top: 1px solid var(--line); background: var(--surface); }
 .footer .wrap { padding-top: 22px; padding-bottom: 32px; color: var(--muted); font-size: 13px; display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; }
 .footer p { margin: 0; max-width: 720px; }
+.footer p.disclaimer { order: 3; flex-basis: 100%; max-width: none; }
+.notice {
+  margin: 16px 0 0; padding: 10px 14px; max-width: 760px; font-size: 14px; color: var(--ink-2);
+  background: var(--surface); border: 1px solid var(--line-2); border-left: 3px solid var(--accent); border-radius: 8px;
+}
+.notice strong { color: var(--ink); }
 
 @media (max-width: 860px) {
   .grid-2, .grid-3 { grid-template-columns: 1fr; }

@@ -45,6 +45,8 @@ let failed = 0;
 for (const path of await pages()) {
   const page = await browser.newPage();
   await page.setViewport({ width: 1200, height: 900 });
+  // accept the portfolio page's disclaimer so its tool renders and is checked too
+  await page.evaluateOnNewDocument(() => localStorage.setItem("mh-portfolio-ack", "1"));
   const problems = [];
   page.on("pageerror", (err) => problems.push(`script error: ${err.message}`));
   page.on("response", (r) => {
