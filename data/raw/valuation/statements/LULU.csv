@@ -26,7 +26,7 @@ date,period,item,value
 2025-07-31,quarterly,EBITDA,6.43529e+08
 2025-07-31,quarterly,FreeCashFlow,1.50778e+08
 2025-07-31,quarterly,NormalizedEBITDA,6.43529e+08
-2025-07-31,quarterly,OrdinarySharesNumber,1.18944e+08
+2025-07-31,quarterly,OrdinarySharesNumber,1.2406e+08
 2025-07-31,quarterly,TotalDebt,1.76272e+09
 2025-10-31,quarterly,CashAndCashEquivalents,1.03586e+09
 2025-10-31,quarterly,CashCashEquivalentsAndShortTermInvestments,1.03586e+09
@@ -34,14 +34,14 @@ date,period,item,value
 2025-10-31,quarterly,EBITDA,5.63345e+08
 2025-10-31,quarterly,FreeCashFlow,8.2443e+07
 2025-10-31,quarterly,NormalizedEBITDA,5.63345e+08
-2025-10-31,quarterly,OrdinarySharesNumber,1.17905e+08
+2025-10-31,quarterly,OrdinarySharesNumber,1.23021e+08
 2025-10-31,quarterly,TotalDebt,1.76279e+09
 2026-01-31,annual,CashAndCashEquivalents,1.8072e+09
 2026-01-31,annual,DilutedAverageShares,1.19068e+08
 2026-01-31,annual,EBITDA,2.70684e+09
 2026-01-31,annual,FreeCashFlow,9.21675e+08
 2026-01-31,annual,NormalizedEBITDA,2.70684e+09
-2026-01-31,annual,OrdinarySharesNumber,1.16496e+08
+2026-01-31,annual,OrdinarySharesNumber,1.21612e+08
 2026-01-31,annual,TotalDebt,1.79844e+09
 2026-01-31,quarterly,CashAndCashEquivalents,1.8072e+09
 2026-01-31,quarterly,CashCashEquivalentsAndShortTermInvestments,1.8072e+09
@@ -49,7 +49,7 @@ date,period,item,value
 2026-01-31,quarterly,EBITDA,9.46815e+08
 2026-01-31,quarterly,FreeCashFlow,9.59671e+08
 2026-01-31,quarterly,NormalizedEBITDA,9.46815e+08
-2026-01-31,quarterly,OrdinarySharesNumber,1.16496e+08
+2026-01-31,quarterly,OrdinarySharesNumber,1.21612e+08
 2026-01-31,quarterly,TotalDebt,1.79844e+09
 2026-04-30,quarterly,CashAndCashEquivalents,1.51473e+09
 2026-04-30,quarterly,CashCashEquivalentsAndShortTermInvestments,1.51473e+09
@@ -65,5 +65,5 @@ date,period,item,value
 2026-07-31,quarterly,EBITDA,5.95985e+08
 2026-07-31,quarterly,FreeCashFlow,2.25162e+08
 2026-07-31,quarterly,NormalizedEBITDA,5.95985e+08
-2026-07-31,quarterly,OrdinarySharesNumber,1.11682e+08
+2026-07-31,quarterly,OrdinarySharesNumber,1.16798e+08
 2026-07-31,quarterly,TotalDebt,2.14113e+09
