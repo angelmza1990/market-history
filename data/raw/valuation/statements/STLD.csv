@@ -23,13 +23,6 @@ date,period,item,value
 2024-12-31,annual,NormalizedEBITDA,2.51814e+09
 2024-12-31,annual,OrdinarySharesNumber,1.51117e+08
 2024-12-31,annual,TotalDebt,3.23101e+09
-2025-06-30,quarterly,CashAndCashEquivalents,4.58048e+08
-2025-06-30,quarterly,CashCashEquivalentsAndShortTermInvestments,4.97625e+08
-2025-06-30,quarterly,EBITDA,5.38112e+08
-2025-06-30,quarterly,FreeCashFlow,1.328e+07
-2025-06-30,quarterly,NormalizedEBITDA,5.38112e+08
-2025-06-30,quarterly,OrdinarySharesNumber,1.47788e+08
-2025-06-30,quarterly,TotalDebt,3.78102e+09
 2025-09-30,quarterly,CashAndCashEquivalents,7.70356e+08
 2025-09-30,quarterly,CashCashEquivalentsAndShortTermInvestments,7.70356e+08
 2025-09-30,quarterly,DilutedAverageShares,1.476e+08
@@ -70,4 +63,11 @@ date,period,item,value
 2026-06-30,quarterly,NormalizedEBITDA,8.96506e+08
 2026-06-30,quarterly,OrdinarySharesNumber,1.4361e+08
 2026-06-30,quarterly,TotalDebt,4.18214e+09
+2026-09-30,quarterly,CashAndCashEquivalents,9.28558e+08
+2026-09-30,quarterly,CashCashEquivalentsAndShortTermInvestments,9.28558e+08
 2026-09-30,quarterly,DilutedAverageShares,1.43623e+08
+2026-09-30,quarterly,EBITDA,1.19276e+09
+2026-09-30,quarterly,FreeCashFlow,6.96186e+08
+2026-09-30,quarterly,NormalizedEBITDA,1.19276e+09
+2026-09-30,quarterly,OrdinarySharesNumber,1.42453e+08
+2026-09-30,quarterly,TotalDebt,4.20389e+09

@@ -14,12 +14,8 @@ date,period,item,value
 2024-12-31,annual,FreeCashFlow,2.164e+09
 2024-12-31,annual,OrdinarySharesNumber,1.31594e+09
 2024-12-31,annual,TotalDebt,5.259e+10
-2025-03-31,quarterly,CashAndCashEquivalents,4.2171e+10
-2025-03-31,quarterly,FreeCashFlow,7.46e+08
-2025-03-31,quarterly,TotalDebt,5.576e+10
 2025-06-30,quarterly,CashAndCashEquivalents,4.1451e+10
 2025-06-30,quarterly,FreeCashFlow,9.14e+08
-2025-06-30,quarterly,OrdinarySharesNumber,1.28944e+09
 2025-06-30,quarterly,TotalDebt,6.1058e+10
 2025-09-30,quarterly,CashAndCashEquivalents,3.6852e+10
 2025-09-30,quarterly,DilutedAverageShares,1.29667e+09
@@ -43,4 +39,8 @@ date,period,item,value
 2026-03-31,quarterly,TotalDebt,6.9063e+10
 2026-06-30,quarterly,DilutedAverageShares,1.23904e+09
 2026-06-30,quarterly,OrdinarySharesNumber,1.22163e+09
+2026-09-30,quarterly,CashAndCashEquivalents,4.5472e+10
 2026-09-30,quarterly,DilutedAverageShares,1.22634e+09
+2026-09-30,quarterly,FreeCashFlow,1.763e+09
+2026-09-30,quarterly,OrdinarySharesNumber,1.19849e+09
+2026-09-30,quarterly,TotalDebt,6.5788e+10

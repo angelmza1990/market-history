@@ -270,7 +270,6 @@ KMB,KMB,Kimberly-Clark,Consumer Staples,Household Products
 KMI,KMI,Kinder Morgan,Energy,Oil & Gas Storage & Transportation
 KO,KO,Coca-Cola Company (The),Consumer Staples,Soft Drinks & Non-alcoholic Beverages
 KR,KR,Kroger,Consumer Staples,Food Retail
-KVUE,KVUE,Kenvue,Consumer Staples,Personal Care Products
 L,L,Loews Corporation,Financials,Multi-line Insurance
 LDOS,LDOS,Leidos,Industrials,Diversified Support Services
 LEN,LEN,Lennar,Consumer Discretionary,Homebuilding
@@ -343,6 +342,7 @@ NXPI,NXPI,NXP Semiconductors,Information Technology,Semiconductors
 O,O,Realty Income,Real Estate,Retail REITs
 ODFL,ODFL,Old Dominion,Industrials,Cargo Ground Transportation
 OKE,OKE,Oneok,Energy,Oil & Gas Storage & Transportation
+OKTA,OKTA,"Okta, Inc.",Information Technology,Application Software
 OMC,OMC,Omnicom Group,Communication Services,Advertising
 ON,ON,ON Semiconductor,Information Technology,Semiconductors
 ORCL,ORCL,Oracle Corporation,Information Technology,Application Software
