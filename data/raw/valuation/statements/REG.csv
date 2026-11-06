@@ -26,6 +26,7 @@ date,period,item,value
 2025-03-31,quarterly,CashAndCashEquivalents,7.5093e+07
 2025-03-31,quarterly,CashCashEquivalentsAndShortTermInvestments,7.5093e+07
 2025-03-31,quarterly,EBITDA,2.57758e+08
+2025-03-31,quarterly,FreeCashFlow,1.61031e+08
 2025-03-31,quarterly,NormalizedEBITDA,2.58644e+08
 2025-03-31,quarterly,OrdinarySharesNumber,1.81526e+08
 2025-03-31,quarterly,TotalDebt,5.25977e+09
@@ -33,6 +34,7 @@ date,period,item,value
 2025-06-30,quarterly,CashCashEquivalentsAndShortTermInvestments,1.50686e+08
 2025-06-30,quarterly,DilutedAverageShares,1.81955e+08
 2025-06-30,quarterly,EBITDA,2.59278e+08
+2025-06-30,quarterly,FreeCashFlow,2.44048e+08
 2025-06-30,quarterly,NormalizedEBITDA,2.60272e+08
 2025-06-30,quarterly,OrdinarySharesNumber,1.8106e+08
 2025-06-30,quarterly,TotalDebt,5.40951e+09
@@ -40,6 +42,7 @@ date,period,item,value
 2025-09-30,quarterly,CashCashEquivalentsAndShortTermInvestments,2.00688e+08
 2025-09-30,quarterly,DilutedAverageShares,1.85494e+08
 2025-09-30,quarterly,EBITDA,2.68734e+08
+2025-09-30,quarterly,FreeCashFlow,2.18665e+08
 2025-09-30,quarterly,NormalizedEBITDA,2.63534e+08
 2025-09-30,quarterly,OrdinarySharesNumber,1.81742e+08
 2025-09-30,quarterly,TotalDebt,5.52127e+09
@@ -55,6 +58,7 @@ date,period,item,value
 2025-12-31,quarterly,CashCashEquivalentsAndShortTermInvestments,1.04657e+08
 2025-12-31,quarterly,DilutedAverageShares,1.83112e+08
 2025-12-31,quarterly,EBITDA,3.6668e+08
+2025-12-31,quarterly,FreeCashFlow,2.03948e+08
 2025-12-31,quarterly,NormalizedEBITDA,3.4685e+08
 2025-12-31,quarterly,OrdinarySharesNumber,1.82902e+08
 2025-12-31,quarterly,TotalDebt,5.33812e+09
@@ -62,6 +66,7 @@ date,period,item,value
 2026-03-31,quarterly,CashCashEquivalentsAndShortTermInvestments,1.41098e+08
 2026-03-31,quarterly,DilutedAverageShares,1.83382e+08
 2026-03-31,quarterly,EBITDA,2.93308e+08
+2026-03-31,quarterly,FreeCashFlow,1.52729e+08
 2026-03-31,quarterly,NormalizedEBITDA,2.85467e+08
 2026-03-31,quarterly,OrdinarySharesNumber,1.83088e+08
 2026-03-31,quarterly,TotalDebt,5.59715e+09
