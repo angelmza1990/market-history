@@ -2,12 +2,14 @@
 "earningsGrowth": 0.082,
 "forwardEps": 13.67012,
 "grossMargins": 0.87307,
-"operatingMargins": 0.39886,
-"payoutRatio": 0.3231,
-"pegRatio": 1.62,
+"operatingMargins": 0.40196,
+"payoutRatio": 0.3291,
+"pegRatio": 1.63,
 "profitMargins": 0.25634,
+"returnOnAssets": 0.01353,
+"returnOnEquity": 0.18035,
 "revenueGrowth": 0.108,
-"totalCash": 739076014080,
-"totalDebt": 607495979008,
-"trailingPegRatio": 1.6212
+"totalCash": 767412011008,
+"totalDebt": 579486023680,
+"trailingPegRatio": 1.6316
 }
