@@ -1,17 +1,17 @@
 {
 "earningsGrowth": 0.141,
 "ebitda": 171486003200,
-"forwardEps": 10.57152,
+"forwardEps": 10.57273,
 "freeCashflow": 105658376192,
 "grossMargins": 0.48786,
 "operatingMargins": 0.33009997,
 "payoutRatio": 0.118,
-"pegRatio": 2.88,
+"pegRatio": 2.77,
 "profitMargins": 0.27604,
 "returnOnAssets": 0.25868,
 "returnOnEquity": 1.42257,
 "revenueGrowth": 0.117,
 "totalCash": 56722001920,
 "totalDebt": 94478999552,
-"trailingPegRatio": 2.877
+"trailingPegRatio": 2.7662
 }
