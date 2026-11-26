@@ -6,12 +6,12 @@
 "grossMargins": 0.81034,
 "operatingMargins": 0.37777,
 "payoutRatio": 0.0716,
-"pegRatio": 0.8,
+"pegRatio": 1.28,
 "profitMargins": 0.31145,
 "returnOnAssets": 0.14577,
 "returnOnEquity": 0.32264,
 "revenueGrowth": 0.261,
 "totalCash": 82448998400,
 "totalDebt": 114842001408,
-"trailingPegRatio": 0.8044
+"trailingPegRatio": 0.729
 }
